@@ -1,4 +1,4 @@
-package com.zjx.Youchat.chatDemo;
+package com.zjx.youchat.chatDemo;
 
 import java.io.*;
 import java.net.ServerSocket;
