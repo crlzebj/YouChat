@@ -1,11 +1,9 @@
 package com.zjx.youchat.controller;
 
-import com.zjx.youchat.pojo.entity.User;
+import com.wf.captcha.ArithmeticCaptcha;
 import com.zjx.youchat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -13,8 +11,10 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping
-	public List<User> selectUser() {
-		return userService.selectUser();
+	@GetMapping("captcha")
+	public String getCaptcha() {
+		ArithmeticCaptcha captcha = new ArithmeticCaptcha(100, 42);
+		System.out.println(captcha.text());
+		return captcha.toBase64();
 	}
 }

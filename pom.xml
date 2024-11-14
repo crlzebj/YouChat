@@ -21,6 +21,7 @@
         <lombok.version>1.18.26</lombok.version>
         <druid.spring.version>1.2.1</druid.spring.version>
         <mybatis.spring.version>2.2.0</mybatis.spring.version>
+        <captcha.version>1.6.2</captcha.version>
     </properties>
 
     <dependencies>
@@ -67,6 +68,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- 验证码 -->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>${captcha.version}</version>
+        </dependency>
+
+        <!--nashorn引擎依赖、JDK17中没有-->
+        <dependency>
+            <groupId>org.openjdk.nashorn</groupId>
+            <artifactId>nashorn-core</artifactId>
+            <version>15.4</version>
         </dependency>
     </dependencies>
 </project>
