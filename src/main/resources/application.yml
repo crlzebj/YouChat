@@ -2,6 +2,7 @@ server:
   port: 8080
 
 spring:
+  # 数据源配置
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,9 +10,24 @@ spring:
       username: root
       password: '030514'
 
+  # redis配置
+  redis:
+    host: 10.181.8.94
+    port: 6379
+    password: '030514'
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 100
+
+# mybatis配置
 mybatis:
-  # mapper配置文件
+  # mapper xml文件
   mapper-locations: classpath:mapper/*.xml
+  # pojo包
   type-aliases-package: com.zjx.youchat.pojo.entity
   configuration:
     # 开启驼峰命名

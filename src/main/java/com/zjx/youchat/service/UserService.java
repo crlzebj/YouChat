@@ -20,4 +20,6 @@ public interface UserService {
 	void deleteUserByEmail(String email);
 
 	User selectUserByEmail(String email);
+
+	String getCaptcha();
 }
