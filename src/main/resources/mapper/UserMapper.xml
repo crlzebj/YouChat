@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.UserMapper">
 	<insert id="insertUser">
 		insert into user values
-		(#{id},#{email},#{password},#{status},#{nickName},#{permission},#{sex},#{personalSignature},#{areaCode},#{createTime},#{lastLoginTime},#{lastLogoutTime});
+		(#{id},#{email},#{password},#{status},#{nickname},#{permission},#{sex},#{personalSignature},#{areaCode},#{createTime},#{lastLoginTime},#{lastLogoutTime});
 	</insert>
 
 	<select id="selectUser" resultType="User">
@@ -26,8 +26,8 @@
 			<if test="user.status!=null">
 				status=#{user.status},
 			</if>
-			<if test="user.nickName!=null">
-				nick_name=#{user.nickName},
+			<if test="user.nickname!=null">
+				nickname=#{user.nickname},
 			</if>
 			<if test="user.permission!=null">
 				permission=#{user.permission},
@@ -79,8 +79,8 @@
 			<if test="user.status!=null">
 				status=#{user.status},
 			</if>
-			<if test="user.nickName!=null">
-				nick_name=#{user.nickName},
+			<if test="user.nickname!=null">
+				nickname=#{user.nickname},
 			</if>
 			<if test="user.permission!=null">
 				permission=#{user.permission},

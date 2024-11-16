@@ -19,7 +19,7 @@ public class User implements Serializable {
     // 
     private Integer status;
     // 
-    private String nickName;
+    private String nickname;
     // 
     private Integer permission;
     // 
