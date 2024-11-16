@@ -28,7 +28,7 @@ mybatis:
   # mapper xml文件
   mapper-locations: classpath:mapper/*.xml
   # pojo包
-  type-aliases-package: com.zjx.youchat.pojo.entity
+  type-aliases-package: com.zjx.youchat.pojo.po
   configuration:
     # 开启驼峰命名
     map-underscore-to-camel-case: true

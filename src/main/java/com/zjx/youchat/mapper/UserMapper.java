@@ -1,6 +1,6 @@
 package com.zjx.youchat.mapper;
 
-import com.zjx.youchat.pojo.entity.User;
+import com.zjx.youchat.pojo.po.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

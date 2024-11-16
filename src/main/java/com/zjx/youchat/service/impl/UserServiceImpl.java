@@ -2,10 +2,10 @@ package com.zjx.youchat.service.impl;
 
 import com.wf.captcha.ArithmeticCaptcha;
 import com.zjx.youchat.mapper.UserMapper;
-import com.zjx.youchat.pojo.entity.User;
+import com.zjx.youchat.pojo.po.User;
 import com.zjx.youchat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
 	private UserMapper userMapper;
 
 	@Autowired
-	private RedisTemplate redisTemplate;
+	private StringRedisTemplate redisTemplate;
 
 	@Override
 	public void insertUser(User user) {

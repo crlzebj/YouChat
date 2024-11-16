@@ -1,6 +1,6 @@
 package com.zjx.youchat.service;
 
-import com.zjx.youchat.pojo.entity.User;
+import com.zjx.youchat.pojo.po.User;
 
 import java.util.List;
 

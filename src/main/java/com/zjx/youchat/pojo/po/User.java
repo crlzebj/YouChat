@@ -1,4 +1,4 @@
-package com.zjx.youchat.pojo.entity;
+package com.zjx.youchat.pojo.po;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
