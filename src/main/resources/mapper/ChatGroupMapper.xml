@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.ChatGroupMapper">
+	<insert id="insertChatGroup">
+		insert into chat_group values
+		(#{id},#{status},#{permission},#{name},#{ownerId},#{groupNotice},#{createTime});
+	</insert>
+
+	<select id="selectChatGroup" resultType="ChatGroup">
+		select * from chat_group;
+	</select>
+
+	<update id="updateChatGroupById">
+		update chat_group
+		<set>
+			<if test="chatGroup.id!=null">
+				id=#{chatGroup.id},
+			</if>
+			<if test="chatGroup.status!=null">
+				status=#{chatGroup.status},
+			</if>
+			<if test="chatGroup.permission!=null">
+				permission=#{chatGroup.permission},
+			</if>
+			<if test="chatGroup.name!=null">
+				name=#{chatGroup.name},
+			</if>
+			<if test="chatGroup.ownerId!=null">
+				owner_id=#{chatGroup.ownerId},
+			</if>
+			<if test="chatGroup.groupNotice!=null">
+				group_notice=#{chatGroup.groupNotice},
+			</if>
+			<if test="chatGroup.createTime!=null">
+				create_time=#{chatGroup.createTime},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+
+	<delete id="deleteChatGroupById">
+		delete from chat_group 
+		where id=#{id};
+	</delete>
+
+	<select id="selectChatGroupById" resultType="ChatGroup">
+		select * from chat_group
+		where id=#{id};
+	</select>
+
+
+</mapper>
+

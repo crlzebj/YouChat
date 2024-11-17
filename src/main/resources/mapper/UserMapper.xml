@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zjx.youchat.mapper.UserMapper">
 	<insert id="insertUser">
 		insert into user values
-		(#{id},#{email},#{password},#{status},#{nickname},#{permission},#{sex},#{personalSignature},#{areaCode},#{createTime},#{lastLoginTime},#{lastLogoutTime});
+			(#{id},#{email},#{password},#{status},#{permission},#{nickname},#{sex},#{personalSignature},#{areaCode},#{createTime},#{lastLoginTime},#{lastLogoutTime});
 	</insert>
 
 	<select id="selectUser" resultType="User">
@@ -26,11 +26,11 @@
 			<if test="user.status!=null">
 				status=#{user.status},
 			</if>
-			<if test="user.nickname!=null">
-				nickname=#{user.nickname},
-			</if>
 			<if test="user.permission!=null">
 				permission=#{user.permission},
+			</if>
+			<if test="user.nickname!=null">
+				nickname=#{user.nickname},
 			</if>
 			<if test="user.sex!=null">
 				sex=#{user.sex},
@@ -55,7 +55,7 @@
 	</update>
 
 	<delete id="deleteUserById">
-		delete from user 
+		delete from user
 		where id=#{id};
 	</delete>
 
@@ -79,11 +79,11 @@
 			<if test="user.status!=null">
 				status=#{user.status},
 			</if>
-			<if test="user.nickname!=null">
-				nickname=#{user.nickname},
-			</if>
 			<if test="user.permission!=null">
 				permission=#{user.permission},
+			</if>
+			<if test="user.nickname!=null">
+				nickname=#{user.nickname},
 			</if>
 			<if test="user.sex!=null">
 				sex=#{user.sex},
@@ -108,7 +108,7 @@
 	</update>
 
 	<delete id="deleteUserByEmail">
-		delete from user 
+		delete from user
 		where email=#{email};
 	</delete>
 
@@ -119,4 +119,3 @@
 
 
 </mapper>
-

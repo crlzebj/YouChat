@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.UserContactMapper">
+	<insert id="insertUserContact">
+		insert into user_contact values
+		(#{userId},#{contactId},#{contactType},#{contactPermission},#{createTime},#{lastUpdateTime});
+	</insert>
+
+	<select id="selectUserContact" resultType="UserContact">
+		select * from user_contact;
+	</select>
+
+	<update id="updateUserContactByUserIdAndContactId">
+		update user_contact
+		<set>
+			<if test="userContact.userId!=null">
+				user_id=#{userContact.userId},
+			</if>
+			<if test="userContact.contactId!=null">
+				contact_id=#{userContact.contactId},
+			</if>
+			<if test="userContact.contactType!=null">
+				contact_type=#{userContact.contactType},
+			</if>
+			<if test="userContact.contactPermission!=null">
+				contact_permission=#{userContact.contactPermission},
+			</if>
+			<if test="userContact.createTime!=null">
+				create_time=#{userContact.createTime},
+			</if>
+			<if test="userContact.lastUpdateTime!=null">
+				last_update_time=#{userContact.lastUpdateTime},
+			</if>
+		</set>
+		where  and user_id=#{userId}contact_id=#{contactId};
+	</update>
+
+	<delete id="deleteUserContactByUserIdAndContactId">
+		delete from user_contact 
+		where  and user_id=#{userId}contact_id=#{contactId};
+	</delete>
+
+	<select id="selectUserContactByUserIdAndContactId" resultType="UserContact">
+		select * from user_contact
+		where  and user_id=#{userId}contact_id=#{contactId};
+	</select>
+
+
+</mapper>
+

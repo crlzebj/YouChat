@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.ContactApplyMapper">
+	<insert id="insertContactApply">
+		insert into contact_apply values
+		(#{id},#{applicantId},#{accepterId},#{contactId},#{status},#{contactType},#{applyInfo},#{lastApplyTime});
+	</insert>
+
+	<select id="selectContactApply" resultType="ContactApply">
+		select * from contact_apply;
+	</select>
+
+	<update id="updateContactApplyById">
+		update contact_apply
+		<set>
+			<if test="contactApply.id!=null">
+				id=#{contactApply.id},
+			</if>
+			<if test="contactApply.applicantId!=null">
+				applicant_id=#{contactApply.applicantId},
+			</if>
+			<if test="contactApply.accepterId!=null">
+				accepter_id=#{contactApply.accepterId},
+			</if>
+			<if test="contactApply.contactId!=null">
+				contact_id=#{contactApply.contactId},
+			</if>
+			<if test="contactApply.status!=null">
+				status=#{contactApply.status},
+			</if>
+			<if test="contactApply.contactType!=null">
+				contact_type=#{contactApply.contactType},
+			</if>
+			<if test="contactApply.applyInfo!=null">
+				apply_info=#{contactApply.applyInfo},
+			</if>
+			<if test="contactApply.lastApplyTime!=null">
+				last_apply_time=#{contactApply.lastApplyTime},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+
+	<delete id="deleteContactApplyById">
+		delete from contact_apply 
+		where id=#{id};
+	</delete>
+
+	<select id="selectContactApplyById" resultType="ContactApply">
+		select * from contact_apply
+		where id=#{id};
+	</select>
+
+
+</mapper>
+
