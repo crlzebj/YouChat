@@ -1,5 +1,6 @@
 package com.zjx.youchat.service;
 
+import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
 import com.zjx.youchat.pojo.po.User;
 
@@ -26,4 +27,6 @@ public interface UserService {
 	Map<String, String> getCaptcha();
 
 	void register(UserRegisterDTO userRegisterDTO);
+
+	String login(UserLoginDTO userLoginDTO);
 }
