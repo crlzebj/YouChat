@@ -1,5 +1,6 @@
 package com.zjx.youchat.service;
 
+import com.zjx.youchat.pojo.dto.ChatGroupRegisterDTO;
 import com.zjx.youchat.pojo.po.ChatGroup;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface ChatGroupService {
 	void deleteChatGroupById(String id);
 
 	ChatGroup selectChatGroupById(String id);
+
+	void register(String ownerId, ChatGroupRegisterDTO chatGroupRegisterDTO);
 }

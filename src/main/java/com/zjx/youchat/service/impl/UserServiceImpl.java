@@ -85,10 +85,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void register(UserRegisterDTO userRegisterDTO) {
+		// 校验验证码
 		if (userRegisterDTO.getCaptchaKey() == null ||
 				!userRegisterDTO.getCaptchaValue().equals(redisTemplate.opsForValue().get(userRegisterDTO.getCaptchaKey()))) {
 			throw new BusinessException("验证码不正确");
 		}
+
+		// 校验邮箱是否可用
 		if (selectUserByEmail(userRegisterDTO.getEmail()) != null) {
 			throw new BusinessException("邮箱已使用");
 		}
@@ -98,6 +101,8 @@ public class UserServiceImpl implements UserService {
 		while (selectUserById(id) != null) {
 			id = RandomStringUtils.random(8, false, true);
 		}
+
+		// 创建新用户
 		User newUser = new User();
 		newUser.setId(id);
 		newUser.setEmail(userRegisterDTO.getEmail());
@@ -111,16 +116,23 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String login(UserLoginDTO userLoginDTO) {
+		// 校验验证码
 		if (userLoginDTO.getCaptchaKey() == null ||
 				!userLoginDTO.getCaptchaValue().equals(redisTemplate.opsForValue().get(userLoginDTO.getCaptchaKey()))) {
 			throw new BusinessException("验证码不正确");
 		}
+
+		// 校验用户名以及密码
 		User user = userMapper.selectUserByEmail(userLoginDTO.getEmail());
 		// 将传入的密码进行SHA256加密
 		String password = DigestUtil.sha256Hex(userLoginDTO.getPassword().getBytes());
 		if (user == null || !password.equals(user.getPassword())) {
 			throw new BusinessException("错误的用户名或密码");
 		}
+
+		// 判断用户是否被封禁
+
+		// 判断用户是否已登录
 
 		// 生成JWT
 		Map<String, Object> payload = new HashMap<>();
