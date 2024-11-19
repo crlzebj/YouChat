@@ -42,7 +42,7 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("login")
-	public ResponseVO login(@RequestBody UserLoginDTO userLoginDTO) {
+	public ResponseVO<String> login(@RequestBody UserLoginDTO userLoginDTO) {
 		String jwt = userService.login(userLoginDTO);
 		return ResponseVO.success(jwt);
 	}
