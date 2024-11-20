@@ -32,3 +32,12 @@ mybatis:
   configuration:
     # 开启驼峰命名
     map-underscore-to-camel-case: true
+
+# 项目配置
+you-chat:
+  server:
+    # 服务端数据存储目录
+    data-path: D:\projects\ProjectData\YouChat
+  client:
+    # 客户端数据存储目录
+    data-path: D:\projects\ProjectData\YouChat
