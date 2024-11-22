@@ -2,11 +2,13 @@ package com.zjx.youchat.controller;
 
 import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
+import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.pojo.vo.ResponseVO;
 import com.zjx.youchat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -20,9 +22,9 @@ public class UserController {
 	 * @return
 	 */
 	@GetMapping("captcha")
-	public ResponseVO<Map<String, String>> getCaptcha() {
-		Map<String, String> captcha = userService.getCaptcha();
-		return ResponseVO.success(captcha);
+	public ResponseVO<CaptchaVO> getCaptcha() {
+		CaptchaVO captchavo = userService.getCaptcha();
+		return ResponseVO.success(captchavo);
 	}
 
 	/**
@@ -42,8 +44,9 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("login")
-	public ResponseVO<String> login(@RequestBody UserLoginDTO userLoginDTO) {
-		String jwt = userService.login(userLoginDTO);
-		return ResponseVO.success(jwt);
+	public ResponseVO<Map<String, String>> login(@RequestBody UserLoginDTO userLoginDTO) {
+		Map<String, String> loginvo = new HashMap<>();
+		loginvo.put("token", userService.login(userLoginDTO));
+		return ResponseVO.success(loginvo);
 	}
 }

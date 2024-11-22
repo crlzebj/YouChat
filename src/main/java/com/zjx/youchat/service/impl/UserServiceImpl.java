@@ -8,6 +8,7 @@ import com.zjx.youchat.mapper.UserMapper;
 import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
 import com.zjx.youchat.pojo.po.User;
+import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Map<String, String> getCaptcha() {
+	public CaptchaVO getCaptcha() {
 		ArithmeticCaptcha captcha = new ArithmeticCaptcha(100, 42);
 		String uuid = UUID.randomUUID().toString();
 
@@ -77,10 +78,11 @@ public class UserServiceImpl implements UserService {
 		redisTemplate.opsForValue().set(UserConstant.CAPTCHA_PREFIX + uuid, captcha.text(), Duration.ofMinutes(5));
 
 		// 将随机的验证码key以及验证码图片的base64编码返回
-		Map<String, String> response = new HashMap<>();
-		response.put(UserConstant.CAPTCHA_PREFIX + uuid, captcha.toBase64());
+		CaptchaVO captchaVO = new CaptchaVO();
+		captchaVO.setUuid(UserConstant.CAPTCHA_PREFIX + uuid);
+		captchaVO.setCaptcha(captcha.toBase64());
 
-		return response;
+		return captchaVO;
 	}
 
 	@Override
