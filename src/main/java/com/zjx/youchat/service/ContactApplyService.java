@@ -1,17 +1,25 @@
 package com.zjx.youchat.service;
 
 import com.zjx.youchat.pojo.po.ContactApply;
+import com.zjx.youchat.pojo.vo.PageVO;
 
 import java.util.List;
 
 public interface ContactApplyService {
-	void insertContactApply(ContactApply contactApply);
+	void insert(ContactApply contactApply);
 
-	List<ContactApply> selectContactApply();
+	List<ContactApply> select();
+	List<ContactApply> select(ContactApply contactApply);
 
-	void updateContactApplyById(Integer id, ContactApply contactApply);
+	Integer count();
+	Integer count(ContactApply contactApply);
 
-	void deleteContactApplyById(Integer id);
+	PageVO<ContactApply> selectPage(Integer pageSize, Integer pageNum);
+	PageVO<ContactApply> selectPage(ContactApply contactApply, Integer pageSize, Integer pageNum);
 
-	ContactApply selectContactApplyById(Integer id);
+	void updateById(Integer id, ContactApply contactApply);
+
+	void deleteById(Integer id);
+
+	ContactApply selectById(Integer id);
 }

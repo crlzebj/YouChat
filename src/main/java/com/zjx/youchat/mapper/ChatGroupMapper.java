@@ -8,13 +8,17 @@ import java.util.List;
 
 @Mapper
 public interface ChatGroupMapper {
-	void insertChatGroup(ChatGroup chatGroup);
+	void insert(ChatGroup chatGroup);
 
-	List<ChatGroup> selectChatGroup();
+	List<ChatGroup> select(ChatGroup chatGroup);
 
-	void updateChatGroupById(@Param("id") String id, @Param("chatGroup") ChatGroup chatGroup);
+	Integer count(ChatGroup chatGroup);
 
-	void deleteChatGroupById(@Param("id") String id);
+	List<ChatGroup> selectPage(@Param("chatGroup") ChatGroup chatGroup, @Param("offset") Integer offset, @Param("count") Integer count);
 
-	ChatGroup selectChatGroupById(@Param("id") String id);
+	void updateById(@Param("id") String id, @Param("chatGroup") ChatGroup chatGroup);
+
+	void deleteById(@Param("id") String id);
+
+	ChatGroup selectById(@Param("id") String id);
 }

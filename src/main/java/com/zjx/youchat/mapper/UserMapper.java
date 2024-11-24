@@ -8,19 +8,23 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
-	void insertUser(User user);
+	void insert(User user);
 
-	List<User> selectUser();
+	List<User> select(User user);
 
-	void updateUserById(@Param("id") String id, @Param("user") User user);
+	Integer count(User user);
 
-	void deleteUserById(@Param("id") String id);
+	List<User> selectPage(@Param("user") User user, @Param("offset") Integer offset, @Param("count") Integer count);
 
-	User selectUserById(@Param("id") String id);
+	void updateById(@Param("id") String id, @Param("user") User user);
 
-	void updateUserByEmail(@Param("email") String email, @Param("user") User user);
+	void deleteById(@Param("id") String id);
 
-	void deleteUserByEmail(@Param("email") String email);
+	User selectById(@Param("id") String id);
 
-	User selectUserByEmail(@Param("email") String email);
+	void updateByEmail(@Param("email") String email, @Param("user") User user);
+
+	void deleteByEmail(@Param("email") String email);
+
+	User selectByEmail(@Param("email") String email);
 }

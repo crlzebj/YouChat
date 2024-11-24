@@ -4,25 +4,33 @@ import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
 import com.zjx.youchat.pojo.po.User;
 import com.zjx.youchat.pojo.vo.CaptchaVO;
+import com.zjx.youchat.pojo.vo.PageVO;
 
 import java.util.List;
 
 public interface UserService {
-	void insertUser(User user);
+	void insert(User user);
 
-	List<User> selectUser();
+	List<User> select();
+	List<User> select(User user);
 
-	void updateUserById(String id, User user);
+	Integer count();
+	Integer count(User user);
 
-	void deleteUserById(String id);
+	PageVO<User> selectPage(Integer pageSize, Integer pageNum);
+	PageVO<User> selectPage(User user, Integer pageSize, Integer pageNum);
 
-	User selectUserById(String id);
+	void updateById(String id, User user);
 
-	void updateUserByEmail(String email, User user);
+	void deleteById(String id);
 
-	void deleteUserByEmail(String email);
+	User selectById(String id);
 
-	User selectUserByEmail(String email);
+	void updateByEmail(String email, User user);
+
+	void deleteByEmail(String email);
+
+	User selectByEmail(String email);
 
 	CaptchaVO getCaptcha();
 

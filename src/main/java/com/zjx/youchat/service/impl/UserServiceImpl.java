@@ -9,6 +9,8 @@ import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
 import com.zjx.youchat.pojo.po.User;
 import com.zjx.youchat.pojo.vo.CaptchaVO;
+import com.zjx.youchat.pojo.vo.PageVO;
+
 import com.zjx.youchat.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,43 +32,81 @@ public class UserServiceImpl implements UserService {
 	private StringRedisTemplate redisTemplate;
 
 	@Override
-	public void insertUser(User user) {
-		userMapper.insertUser(user);
+	public void insert(User user) {
+		userMapper.insert(user);
 	}
 
 	@Override
-	public List<User> selectUser() {
-		return userMapper.selectUser();
+	public List<User> select() {
+		return userMapper.select(new User());
 	}
 
 	@Override
-	public void updateUserById(String id, User user) {
-		userMapper.updateUserById(id, user);
+	public List<User> select(User user) {
+		return userMapper.select(user);
 	}
 
 	@Override
-	public void deleteUserById(String id) {
-		userMapper.deleteUserById(id);
+	public Integer count() {
+		return userMapper.count(new User());
 	}
 
 	@Override
-	public User selectUserById(String id) {
-		return userMapper.selectUserById(id);
+	public Integer count(User user) {
+		return userMapper.count(user);
 	}
 
 	@Override
-	public void updateUserByEmail(String email, User user) {
-		userMapper.updateUserByEmail(email, user);
+	public PageVO<User> selectPage(Integer pageSize, Integer pageNum) {
+		PageVO<User> pageVO = new PageVO<User>();
+		pageVO.setTotalSize(count());
+		pageVO.setPageSize(pageSize);
+		pageVO.setTotalPage((count() + pageSize - 1) / pageSize);
+		pageVO.setPageNum(pageNum);
+		pageVO.setList(userMapper.selectPage(new User(), (pageNum - 1) * pageSize, pageSize));
+		return pageVO;
 	}
 
 	@Override
-	public void deleteUserByEmail(String email) {
-		userMapper.deleteUserByEmail(email);
+	public PageVO<User> selectPage(User user, Integer pageSize, Integer pageNum) {
+		PageVO<User> pageVO = new PageVO<User>();
+		pageVO.setTotalSize(count(user));
+		pageVO.setPageSize(pageSize);
+		pageVO.setTotalPage((count(user) + pageSize - 1) / pageSize);
+		pageVO.setPageNum(pageNum);
+		pageVO.setList(userMapper.selectPage(user, (pageNum - 1) * pageSize, pageSize));
+		return pageVO;
+	}
+
+
+	@Override
+	public void updateById(String id, User user) {
+		userMapper.updateById(id, user);
 	}
 
 	@Override
-	public User selectUserByEmail(String email) {
-		return userMapper.selectUserByEmail(email);
+	public void deleteById(String id) {
+		userMapper.deleteById(id);
+	}
+
+	@Override
+	public User selectById(String id) {
+		return userMapper.selectById(id);
+	}
+
+	@Override
+	public void updateByEmail(String email, User user) {
+		userMapper.updateByEmail(email, user);
+	}
+
+	@Override
+	public void deleteByEmail(String email) {
+		userMapper.deleteByEmail(email);
+	}
+
+	@Override
+	public User selectByEmail(String email) {
+		return userMapper.selectByEmail(email);
 	}
 
 	@Override
@@ -94,13 +134,13 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// 校验邮箱是否可用
-		if (selectUserByEmail(userRegisterDTO.getEmail()) != null) {
+		if (selectByEmail(userRegisterDTO.getEmail()) != null) {
 			throw new BusinessException("邮箱已使用");
 		}
 
 		// 为新用户创建id
 		String id = RandomStringUtils.random(8, false, true);
-		while (selectUserById(id) != null) {
+		while (selectById(id) != null) {
 			id = RandomStringUtils.random(8, false, true);
 		}
 
@@ -113,7 +153,7 @@ public class UserServiceImpl implements UserService {
 		newUser.setPassword(password);
 		newUser.setNickname(userRegisterDTO.getNickname());
 		newUser.setCreateTime(LocalDateTime.now());
-		insertUser(newUser);
+		insert(newUser);
 	}
 
 	@Override
@@ -125,7 +165,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// 校验用户名以及密码
-		User user = userMapper.selectUserByEmail(userLoginDTO.getEmail());
+		User user = userMapper.selectByEmail(userLoginDTO.getEmail());
 		// 将传入的密码进行SHA256加密
 		String password = DigestUtil.sha256Hex(userLoginDTO.getPassword().getBytes());
 		if (user == null || !password.equals(user.getPassword())) {

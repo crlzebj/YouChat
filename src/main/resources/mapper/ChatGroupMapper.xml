@@ -1,17 +1,95 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zjx.youchat.mapper.ChatGroupMapper">
-	<insert id="insertChatGroup">
+	<insert id="insert">
 		insert into chat_group values
-		(#{id},#{status},#{permission},#{name},#{ownerId},#{groupNotice},#{createTime});
+			(#{id},#{status},#{permission},#{name},#{ownerId},#{groupNotice},#{createTime});
 	</insert>
 
-	<select id="selectChatGroup" resultType="ChatGroup">
-		select * from chat_group;
+	<select id="select" resultType="ChatGroup">
+		select * from chat_group
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="permission!=null">
+				and permission=#{permission}
+			</if>
+			<if test="name!=null">
+				and name=#{name}
+			</if>
+			<if test="ownerId!=null">
+				and owner_id=#{ownerId}
+			</if>
+			<if test="groupNotice!=null">
+				and group_notice=#{groupNotice}
+			</if>
+			<if test="createTime!=null">
+				and create_time=#{createTime}
+			</if>
+		</where>;
 	</select>
 
-	<update id="updateChatGroupById">
+	<select id="count" resultType="Integer">
+		select count(*) from chat_group
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="permission!=null">
+				and permission=#{permission}
+			</if>
+			<if test="name!=null">
+				and name=#{name}
+			</if>
+			<if test="ownerId!=null">
+				and owner_id=#{ownerId}
+			</if>
+			<if test="groupNotice!=null">
+				and group_notice=#{groupNotice}
+			</if>
+			<if test="createTime!=null">
+				and create_time=#{createTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="ChatGroup">
+		select * from chat_group
+		<where>
+			<if test="chatGroup.id!=null">
+				and id=#{chatGroup.id}
+			</if>
+			<if test="chatGroup.status!=null">
+				and status=#{chatGroup.status}
+			</if>
+			<if test="chatGroup.permission!=null">
+				and permission=#{chatGroup.permission}
+			</if>
+			<if test="chatGroup.name!=null">
+				and name=#{chatGroup.name}
+			</if>
+			<if test="chatGroup.ownerId!=null">
+				and owner_id=#{chatGroup.ownerId}
+			</if>
+			<if test="chatGroup.groupNotice!=null">
+				and group_notice=#{chatGroup.groupNotice}
+			</if>
+			<if test="chatGroup.createTime!=null">
+				and create_time=#{chatGroup.createTime}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateById">
 		update chat_group
 		<set>
 			<if test="chatGroup.id!=null">
@@ -39,12 +117,12 @@
 		where id=#{id};
 	</update>
 
-	<delete id="deleteChatGroupById">
-		delete from chat_group 
+	<delete id="deleteById">
+		delete from chat_group
 		where id=#{id};
 	</delete>
 
-	<select id="selectChatGroupById" resultType="ChatGroup">
+	<select id="selectById" resultType="ChatGroup">
 		select * from chat_group
 		where id=#{id};
 	</select>

@@ -8,13 +8,17 @@ import java.util.List;
 
 @Mapper
 public interface UserContactMapper {
-	void insertUserContact(UserContact userContact);
+	void insert(UserContact userContact);
 
-	List<UserContact> selectUserContact();
+	List<UserContact> select(UserContact userContact);
 
-	void updateUserContactByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId, @Param("userContact") UserContact userContact);
+	Integer count(UserContact userContact);
 
-	void deleteUserContactByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
+	List<UserContact> selectPage(@Param("userContact") UserContact userContact, @Param("offset") Integer offset, @Param("count") Integer count);
 
-	UserContact selectUserContactByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
+	void updateByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId, @Param("userContact") UserContact userContact);
+
+	void deleteByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
+
+	UserContact selectByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
 }

@@ -8,13 +8,17 @@ import java.util.List;
 
 @Mapper
 public interface ContactApplyMapper {
-	void insertContactApply(ContactApply contactApply);
+	void insert(ContactApply contactApply);
 
-	List<ContactApply> selectContactApply();
+	List<ContactApply> select(ContactApply contactApply);
 
-	void updateContactApplyById(@Param("id") Integer id, @Param("contactApply") ContactApply contactApply);
+	Integer count(ContactApply contactApply);
 
-	void deleteContactApplyById(@Param("id") Integer id);
+	List<ContactApply> selectPage(@Param("contactApply") ContactApply contactApply, @Param("offset") Integer offset, @Param("count") Integer count);
 
-	ContactApply selectContactApplyById(@Param("id") Integer id);
+	void updateById(@Param("id") Integer id, @Param("contactApply") ContactApply contactApply);
+
+	void deleteById(@Param("id") Integer id);
+
+	ContactApply selectById(@Param("id") Integer id);
 }
