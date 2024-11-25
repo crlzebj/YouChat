@@ -145,15 +145,17 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// 创建新用户
-		User newUser = new User();
-		newUser.setId(id);
-		newUser.setEmail(userRegisterDTO.getEmail());
+		User user = new User();
+		user.setId(id);
+		user.setEmail(userRegisterDTO.getEmail());
 		// 对用户密码进行SHA256加密
 		String password = DigestUtil.sha256Hex(userRegisterDTO.getPassword().getBytes());
-		newUser.setPassword(password);
-		newUser.setNickname(userRegisterDTO.getNickname());
-		newUser.setCreateTime(LocalDateTime.now());
-		insert(newUser);
+		user.setPassword(password);
+		user.setStatus(1);
+		user.setPermission(1);
+		user.setNickname(userRegisterDTO.getNickname());
+		user.setCreateTime(LocalDateTime.now());
+		insert(user);
 	}
 
 	@Override
@@ -185,7 +187,7 @@ public class UserServiceImpl implements UserService {
 				.signWith(SignatureAlgorithm.HS256, UserConstant.SECRET_KEY)
 				.setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
 				.compact();
-
+		user.setLastLoginTime(LocalDateTime.now());
 		return jwt;
 	}
 }
