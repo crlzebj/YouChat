@@ -10,6 +10,7 @@ import com.zjx.youchat.pojo.po.UserContact;
 import com.zjx.youchat.pojo.vo.PageVO;
 
 import com.zjx.youchat.service.ChatGroupService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +100,12 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 	@Transactional
 	public void register(String ownerId, ChatGroupRegisterDTO chatGroupRegisterDTO) {
 		ChatGroup chatGroup = new ChatGroup();
-		chatGroup.setId(chatGroupRegisterDTO.getId());
+		// 为新用户创建id
+		String id = "G" + RandomStringUtils.random(7, false, true);
+		while (selectById(id) != null) {
+			id = "G" + RandomStringUtils.random(7, false, true);
+		}
+		chatGroup.setId(id);
 		chatGroup.setStatus(1);
 		chatGroup.setPermission(chatGroupRegisterDTO.getPermission());
 		chatGroup.setName(chatGroupRegisterDTO.getName());
@@ -111,9 +117,9 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 			if (!Files.exists(youchatDataPath)) {
 				Files.createDirectories(youchatDataPath);
 			}
-			File file1 = new File(youchatDataPath.toString(), chatGroupRegisterDTO.getId() + ".png");
+			File file1 = new File(youchatDataPath.toString(), chatGroup.getId() + ".png");
 			chatGroupRegisterDTO.getAvatarFile().transferTo(file1.getAbsoluteFile());
-			File file2 = new File(youchatDataPath.toString(), chatGroupRegisterDTO.getId() + "_cover.png");
+			File file2 = new File(youchatDataPath.toString(), chatGroup.getId() + "_cover.png");
 			chatGroupRegisterDTO.getAvatarThumbFile().transferTo(file2.getAbsoluteFile());
 		} catch (Exception e) {
 			throw new BusinessException("头像上传失败，请稍后重试");

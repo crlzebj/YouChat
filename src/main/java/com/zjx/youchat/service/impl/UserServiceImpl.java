@@ -139,9 +139,9 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// 为新用户创建id
-		String id = RandomStringUtils.random(8, false, true);
+		String id = "U" + RandomStringUtils.random(7, false, true);
 		while (selectById(id) != null) {
-			id = RandomStringUtils.random(8, false, true);
+			id = "U" + RandomStringUtils.random(7, false, true);
 		}
 
 		// 创建新用户
