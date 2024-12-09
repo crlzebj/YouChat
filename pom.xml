@@ -127,5 +127,11 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.70.Final</version>
         </dependency>
+
+        <!-- Httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
     </dependencies>
 </project>

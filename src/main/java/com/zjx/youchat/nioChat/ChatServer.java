@@ -33,7 +33,7 @@ public class ChatServer implements ApplicationRunner {
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new HttpServerCodec());
                             ch.pipeline().addLast(new HttpObjectAggregator(64 * 1024));
-                            ch.pipeline().addLast(new IdleStateHandler(6, 0, 0));
+                            ch.pipeline().addLast(new IdleStateHandler(60, 0, 0));
                             ch.pipeline().addLast(new HeartBeatHandler());
                             ch.pipeline().addLast(new WebSocketServerProtocolHandler("/websocket",
                                     null, true, 65536, true, true));

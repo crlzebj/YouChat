@@ -102,17 +102,17 @@
 				last_update_time=#{userContact.lastUpdateTime},
 			</if>
 		</set>
-		where  and user_id=#{userId}contact_id=#{contactId};
+		where user_id=#{userId} and contact_id=#{contactId};
 	</update>
 
 	<delete id="deleteByUserIdAndContactId">
 		delete from user_contact
-		where  and user_id=#{userId}contact_id=#{contactId};
+		where user_id=#{userId} and contact_id=#{contactId};
 	</delete>
 
 	<select id="selectByUserIdAndContactId" resultType="UserContact">
 		select * from user_contact
-		where  and user_id=#{userId}contact_id=#{contactId};
+		where user_id=#{userId} and contact_id=#{contactId};
 	</select>
 
 
