@@ -1,10 +1,9 @@
 package com.zjx.youchat.nioChat.handler;
 
 import com.zjx.youchat.constant.UserConstant;
-import com.zjx.youchat.nioChat.Robot;
+import com.zjx.youchat.service.impl.JfchataiRobotServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -16,7 +15,7 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
         log.info(textWebSocketFrame.text());
-        String responseMessage = Robot.chat(textWebSocketFrame.text());
+        String responseMessage = new JfchataiRobotServiceImpl().chat(textWebSocketFrame.text());
         log.info(responseMessage);
         channelHandlerContext.writeAndFlush(new TextWebSocketFrame(responseMessage));
     }
