@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.ChatSessionUserMapper">
+	<insert id="insert">
+		insert into chat_session_user values
+		(#{userId},#{contactId},#{sessionId},#{contactName});
+	</insert>
+
+	<select id="select" resultType="ChatSessionUser">
+		select * from chat_session_user
+		<where>
+			<if test="userId!=null">
+				and user_id=#{userId}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="sessionId!=null">
+				and session_id=#{sessionId}
+			</if>
+			<if test="contactName!=null">
+				and contact_name=#{contactName}
+			</if>
+		</where>;
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(*) from chat_session_user
+		<where>
+			<if test="userId!=null">
+				and user_id=#{userId}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="sessionId!=null">
+				and session_id=#{sessionId}
+			</if>
+			<if test="contactName!=null">
+				and contact_name=#{contactName}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="ChatSessionUser">
+		select * from chat_session_user
+		<where>
+			<if test="chatSessionUser.userId!=null">
+				and user_id=#{chatSessionUser.userId}
+			</if>
+			<if test="chatSessionUser.contactId!=null">
+				and contact_id=#{chatSessionUser.contactId}
+			</if>
+			<if test="chatSessionUser.sessionId!=null">
+				and session_id=#{chatSessionUser.sessionId}
+			</if>
+			<if test="chatSessionUser.contactName!=null">
+				and contact_name=#{chatSessionUser.contactName}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateByUserIdAndContactId">
+		update chat_session_user
+		<set>
+			<if test="chatSessionUser.userId!=null">
+				user_id=#{chatSessionUser.userId},
+			</if>
+			<if test="chatSessionUser.contactId!=null">
+				contact_id=#{chatSessionUser.contactId},
+			</if>
+			<if test="chatSessionUser.sessionId!=null">
+				session_id=#{chatSessionUser.sessionId},
+			</if>
+			<if test="chatSessionUser.contactName!=null">
+				contact_name=#{chatSessionUser.contactName},
+			</if>
+		</set>
+		where user_id=#{userId} and contact_id=#{contactId};
+	</update>
+
+	<delete id="deleteByUserIdAndContactId">
+		delete from chat_session_user 
+		where user_id=#{userId} and contact_id=#{contactId};
+	</delete>
+
+	<select id="selectByUserIdAndContactId" resultType="ChatSessionUser">
+		select * from chat_session_user
+		where user_id=#{userId} and contact_id=#{contactId};
+	</select>
+
+
+</mapper>
+
