@@ -6,17 +6,17 @@ import lombok.Data;
 
 /**
  * @author zjx
- * 
+ *
  */
 @Data
 public class UserContact implements Serializable {
     // 用户id
     private String userId;
-    // 联系人或群聊id
+    // 好友id/群组id
     private String contactId;
-    // 联系人类型
-    private Integer contactType;
-    // 联系人权限
+    // 类型 0：好友 1：群组
+    private Integer type;
+    // 好友权限 0：好友 1：拉黑 2：被拉黑 3：删除 4：被删除 5：非好友
     private Integer contactPermission;
     // 创建时间
     private LocalDateTime createTime;

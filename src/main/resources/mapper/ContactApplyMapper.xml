@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.ContactApplyMapper">
 	<insert id="insert">
 		insert into contact_apply values
-			(#{id},#{applicantId},#{accepterId},#{contactId},#{status},#{contactType},#{applyInfo},#{lastApplyTime});
+			(#{id},#{applicantId},#{accepterId},#{contactId},#{status},#{type},#{applyInfo},#{lastApplyTime});
 	</insert>
 
 	<select id="select" resultType="ContactApply">
@@ -25,8 +25,8 @@
 			<if test="status!=null">
 				and status=#{status}
 			</if>
-			<if test="contactType!=null">
-				and contact_type=#{contactType}
+			<if test="type!=null">
+				and type=#{type}
 			</if>
 			<if test="applyInfo!=null">
 				and apply_info=#{applyInfo}
@@ -55,8 +55,8 @@
 			<if test="status!=null">
 				and status=#{status}
 			</if>
-			<if test="contactType!=null">
-				and contact_type=#{contactType}
+			<if test="type!=null">
+				and type=#{type}
 			</if>
 			<if test="applyInfo!=null">
 				and apply_info=#{applyInfo}
@@ -85,8 +85,8 @@
 			<if test="contactApply.status!=null">
 				and status=#{contactApply.status}
 			</if>
-			<if test="contactApply.contactType!=null">
-				and contact_type=#{contactApply.contactType}
+			<if test="contactApply.type!=null">
+				and type=#{contactApply.type}
 			</if>
 			<if test="contactApply.applyInfo!=null">
 				and apply_info=#{contactApply.applyInfo}
@@ -116,8 +116,8 @@
 			<if test="contactApply.status!=null">
 				status=#{contactApply.status},
 			</if>
-			<if test="contactApply.contactType!=null">
-				contact_type=#{contactApply.contactType},
+			<if test="contactApply.type!=null">
+				type=#{contactApply.type},
 			</if>
 			<if test="contactApply.applyInfo!=null">
 				apply_info=#{contactApply.applyInfo},

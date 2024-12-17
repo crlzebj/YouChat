@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.ChatGroupMapper">
 	<insert id="insert">
 		insert into chat_group values
-			(#{id},#{status},#{permission},#{name},#{ownerId},#{groupNotice},#{createTime});
+			(#{id},#{status},#{permission},#{ownerId},#{nickname},#{groupNotice},#{createTime});
 	</insert>
 
 	<select id="select" resultType="ChatGroup">
@@ -19,11 +19,11 @@
 			<if test="permission!=null">
 				and permission=#{permission}
 			</if>
-			<if test="name!=null">
-				and name=#{name}
-			</if>
 			<if test="ownerId!=null">
 				and owner_id=#{ownerId}
+			</if>
+			<if test="nickname!=null">
+				and nickname=#{nickname}
 			</if>
 			<if test="groupNotice!=null">
 				and group_notice=#{groupNotice}
@@ -46,11 +46,11 @@
 			<if test="permission!=null">
 				and permission=#{permission}
 			</if>
-			<if test="name!=null">
-				and name=#{name}
-			</if>
 			<if test="ownerId!=null">
 				and owner_id=#{ownerId}
+			</if>
+			<if test="nickname!=null">
+				and nickname=#{nickname}
 			</if>
 			<if test="groupNotice!=null">
 				and group_notice=#{groupNotice}
@@ -73,11 +73,11 @@
 			<if test="chatGroup.permission!=null">
 				and permission=#{chatGroup.permission}
 			</if>
-			<if test="chatGroup.name!=null">
-				and name=#{chatGroup.name}
-			</if>
 			<if test="chatGroup.ownerId!=null">
 				and owner_id=#{chatGroup.ownerId}
+			</if>
+			<if test="chatGroup.nickname!=null">
+				and nickname=#{chatGroup.nickname}
 			</if>
 			<if test="chatGroup.groupNotice!=null">
 				and group_notice=#{chatGroup.groupNotice}
@@ -101,11 +101,11 @@
 			<if test="chatGroup.permission!=null">
 				permission=#{chatGroup.permission},
 			</if>
-			<if test="chatGroup.name!=null">
-				name=#{chatGroup.name},
-			</if>
 			<if test="chatGroup.ownerId!=null">
 				owner_id=#{chatGroup.ownerId},
+			</if>
+			<if test="chatGroup.nickname!=null">
+				nickname=#{chatGroup.nickname},
 			</if>
 			<if test="chatGroup.groupNotice!=null">
 				group_notice=#{chatGroup.groupNotice},

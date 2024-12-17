@@ -26,10 +26,10 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
-	private UserMapper userMapper;
+	private StringRedisTemplate redisTemplate;
 
 	@Autowired
-	private StringRedisTemplate redisTemplate;
+	private UserMapper userMapper;
 
 	@Override
 	public void insert(User user) {
@@ -177,6 +177,9 @@ public class UserServiceImpl implements UserService {
 		// 判断用户是否被封禁
 
 		// 判断用户是否已登录
+
+		// 查询用户好友列表、群组列表，放在redis中
+
 
 		// 生成JWT
 		Map<String, Object> payload = new HashMap<>();

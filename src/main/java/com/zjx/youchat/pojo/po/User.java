@@ -16,9 +16,9 @@ public class User implements Serializable {
     private String email;
     // 密码
     private String password;
-    // 账号状态
+    // 状态 0：封禁 1：正常
     private Integer status;
-    // 联系人申请权限
+    // 加我为好友的方式 0：允许任何人 1：需要验证信息 2：禁止加我为好友
     private Integer permission;
     // 昵称
     private String nickname;
@@ -27,7 +27,7 @@ public class User implements Serializable {
     // 个性签名
     private String personalSignature;
     // 地区
-    private Integer areaCode;
+    private String area;
     // 创建时间
     private LocalDateTime createTime;
     // 最后登录时间

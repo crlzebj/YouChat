@@ -1,7 +1,7 @@
-package com.zjx.youchat.nioChat;
+package com.zjx.youchat.websocket;
 
-import com.zjx.youchat.nioChat.handler.HeartBeatHandler;
-import com.zjx.youchat.nioChat.handler.WebSocketChatHandler;
+import com.zjx.youchat.websocket.handler.HeartBeatHandler;
+import com.zjx.youchat.websocket.handler.WebSocketChatHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

@@ -1,4 +1,4 @@
-package com.zjx.youchat.nioChat.handler;
+package com.zjx.youchat.websocket.handler;
 
 import com.zjx.youchat.constant.UserConstant;
 import com.zjx.youchat.service.impl.JfchataiRobotServiceImpl;
@@ -12,14 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
-        log.info(textWebSocketFrame.text());
-        String responseMessage = new JfchataiRobotServiceImpl().chat(textWebSocketFrame.text());
-        log.info(responseMessage);
-        channelHandlerContext.writeAndFlush(new TextWebSocketFrame(responseMessage));
-    }
-
     private Claims login(String uri) {
         if (!uri.contains("?")) {
             return null;
@@ -56,5 +48,13 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
         if (login(handshakeComplete.requestUri()) == null) {
             ctx.channel().close();
         }
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
+        log.info(textWebSocketFrame.text());
+        String responseMessage = new JfchataiRobotServiceImpl().chat(textWebSocketFrame.text());
+        log.info(responseMessage);
+        channelHandlerContext.writeAndFlush(new TextWebSocketFrame(responseMessage));
     }
 }

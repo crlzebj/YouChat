@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.UserContactMapper">
 	<insert id="insert">
 		insert into user_contact values
-			(#{userId},#{contactId},#{contactType},#{contactPermission},#{createTime},#{lastUpdateTime});
+			(#{userId},#{contactId},#{type},#{contactPermission},#{createTime},#{lastUpdateTime});
 	</insert>
 
 	<select id="select" resultType="UserContact">
@@ -16,8 +16,8 @@
 			<if test="contactId!=null">
 				and contact_id=#{contactId}
 			</if>
-			<if test="contactType!=null">
-				and contact_type=#{contactType}
+			<if test="type!=null">
+				and type=#{type}
 			</if>
 			<if test="contactPermission!=null">
 				and contact_permission=#{contactPermission}
@@ -40,8 +40,8 @@
 			<if test="contactId!=null">
 				and contact_id=#{contactId}
 			</if>
-			<if test="contactType!=null">
-				and contact_type=#{contactType}
+			<if test="type!=null">
+				and type=#{type}
 			</if>
 			<if test="contactPermission!=null">
 				and contact_permission=#{contactPermission}
@@ -64,8 +64,8 @@
 			<if test="userContact.contactId!=null">
 				and contact_id=#{userContact.contactId}
 			</if>
-			<if test="userContact.contactType!=null">
-				and contact_type=#{userContact.contactType}
+			<if test="userContact.type!=null">
+				and type=#{userContact.type}
 			</if>
 			<if test="userContact.contactPermission!=null">
 				and contact_permission=#{userContact.contactPermission}
@@ -89,8 +89,8 @@
 			<if test="userContact.contactId!=null">
 				contact_id=#{userContact.contactId},
 			</if>
-			<if test="userContact.contactType!=null">
-				contact_type=#{userContact.contactType},
+			<if test="userContact.type!=null">
+				type=#{userContact.type},
 			</if>
 			<if test="userContact.contactPermission!=null">
 				contact_permission=#{userContact.contactPermission},

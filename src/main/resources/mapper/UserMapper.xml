@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.UserMapper">
 	<insert id="insert">
 		insert into user values
-			(#{id},#{email},#{password},#{status},#{permission},#{nickname},#{sex},#{personalSignature},#{areaCode},#{createTime},#{lastLoginTime},#{lastLogoutTime});
+			(#{id},#{email},#{password},#{status},#{permission},#{nickname},#{sex},#{personalSignature},#{area},#{createTime},#{lastLoginTime},#{lastLogoutTime});
 	</insert>
 
 	<select id="select" resultType="User">
@@ -34,8 +34,8 @@
 			<if test="personalSignature!=null">
 				and personal_signature=#{personalSignature}
 			</if>
-			<if test="areaCode!=null">
-				and area_code=#{areaCode}
+			<if test="area!=null">
+				and area=#{area}
 			</if>
 			<if test="createTime!=null">
 				and create_time=#{createTime}
@@ -76,8 +76,8 @@
 			<if test="personalSignature!=null">
 				and personal_signature=#{personalSignature}
 			</if>
-			<if test="areaCode!=null">
-				and area_code=#{areaCode}
+			<if test="area!=null">
+				and area=#{area}
 			</if>
 			<if test="createTime!=null">
 				and create_time=#{createTime}
@@ -118,8 +118,8 @@
 			<if test="user.personalSignature!=null">
 				and personal_signature=#{user.personalSignature}
 			</if>
-			<if test="user.areaCode!=null">
-				and area_code=#{user.areaCode}
+			<if test="user.area!=null">
+				and area=#{user.area}
 			</if>
 			<if test="user.createTime!=null">
 				and create_time=#{user.createTime}
@@ -161,8 +161,8 @@
 			<if test="user.personalSignature!=null">
 				personal_signature=#{user.personalSignature},
 			</if>
-			<if test="user.areaCode!=null">
-				area_code=#{user.areaCode},
+			<if test="user.area!=null">
+				area=#{user.area},
 			</if>
 			<if test="user.createTime!=null">
 				create_time=#{user.createTime},
@@ -214,8 +214,8 @@
 			<if test="user.personalSignature!=null">
 				personal_signature=#{user.personalSignature},
 			</if>
-			<if test="user.areaCode!=null">
-				area_code=#{user.areaCode},
+			<if test="user.area!=null">
+				area=#{user.area},
 			</if>
 			<if test="user.createTime!=null">
 				create_time=#{user.createTime},

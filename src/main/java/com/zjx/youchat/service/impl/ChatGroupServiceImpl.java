@@ -108,7 +108,7 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 		chatGroup.setId(id);
 		chatGroup.setStatus(1);
 		chatGroup.setPermission(chatGroupRegisterDTO.getPermission());
-		chatGroup.setName(chatGroupRegisterDTO.getName());
+		chatGroup.setNickname(chatGroupRegisterDTO.getName());
 		chatGroup.setOwnerId(ownerId);
 		chatGroup.setGroupNotice(chatGroupRegisterDTO.getGroupNotice());
 		chatGroup.setCreateTime(LocalDateTime.now());
@@ -129,7 +129,7 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 		UserContact userContact = new UserContact();
 		userContact.setUserId(ownerId);
 		userContact.setContactId(chatGroup.getId());
-		userContact.setContactType(1);
+		userContact.setType(1);
 		userContact.setContactPermission(1);
 		userContact.setCreateTime(LocalDateTime.now());
 		userContact.setLastUpdateTime(LocalDateTime.now());

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.MessageMapper">
+	<insert id="insert">
+		insert into message values
+			(#{id},#{sessionId},#{senderId},#{senderNickName},#{contactId},#{type},#{content},#{fileName},#{fileType},#{fileSize},#{sendTime},#{contactType},#{status});
+	</insert>
+
+	<select id="select" resultType="Message">
+		select * from message
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="sessionId!=null">
+				and session_id=#{sessionId}
+			</if>
+			<if test="senderId!=null">
+				and sender_id=#{senderId}
+			</if>
+			<if test="senderNickName!=null">
+				and sender_nick_name=#{senderNickName}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="type!=null">
+				and type=#{type}
+			</if>
+			<if test="content!=null">
+				and content=#{content}
+			</if>
+			<if test="fileName!=null">
+				and file_name=#{fileName}
+			</if>
+			<if test="fileType!=null">
+				and file_type=#{fileType}
+			</if>
+			<if test="fileSize!=null">
+				and file_size=#{fileSize}
+			</if>
+			<if test="sendTime!=null">
+				and send_time=#{sendTime}
+			</if>
+			<if test="contactType!=null">
+				and contact_type=#{contactType}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+		</where>;
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(*) from message
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="sessionId!=null">
+				and session_id=#{sessionId}
+			</if>
+			<if test="senderId!=null">
+				and sender_id=#{senderId}
+			</if>
+			<if test="senderNickName!=null">
+				and sender_nick_name=#{senderNickName}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="type!=null">
+				and type=#{type}
+			</if>
+			<if test="content!=null">
+				and content=#{content}
+			</if>
+			<if test="fileName!=null">
+				and file_name=#{fileName}
+			</if>
+			<if test="fileType!=null">
+				and file_type=#{fileType}
+			</if>
+			<if test="fileSize!=null">
+				and file_size=#{fileSize}
+			</if>
+			<if test="sendTime!=null">
+				and send_time=#{sendTime}
+			</if>
+			<if test="contactType!=null">
+				and contact_type=#{contactType}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="Message">
+		select * from message
+		<where>
+			<if test="message.id!=null">
+				and id=#{message.id}
+			</if>
+			<if test="message.sessionId!=null">
+				and session_id=#{message.sessionId}
+			</if>
+			<if test="message.senderId!=null">
+				and sender_id=#{message.senderId}
+			</if>
+			<if test="message.senderNickName!=null">
+				and sender_nick_name=#{message.senderNickName}
+			</if>
+			<if test="message.contactId!=null">
+				and contact_id=#{message.contactId}
+			</if>
+			<if test="message.type!=null">
+				and type=#{message.type}
+			</if>
+			<if test="message.content!=null">
+				and content=#{message.content}
+			</if>
+			<if test="message.fileName!=null">
+				and file_name=#{message.fileName}
+			</if>
+			<if test="message.fileType!=null">
+				and file_type=#{message.fileType}
+			</if>
+			<if test="message.fileSize!=null">
+				and file_size=#{message.fileSize}
+			</if>
+			<if test="message.sendTime!=null">
+				and send_time=#{message.sendTime}
+			</if>
+			<if test="message.contactType!=null">
+				and contact_type=#{message.contactType}
+			</if>
+			<if test="message.status!=null">
+				and status=#{message.status}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateById">
+		update message
+		<set>
+			<if test="message.id!=null">
+				id=#{message.id},
+			</if>
+			<if test="message.sessionId!=null">
+				session_id=#{message.sessionId},
+			</if>
+			<if test="message.senderId!=null">
+				sender_id=#{message.senderId},
+			</if>
+			<if test="message.senderNickName!=null">
+				sender_nick_name=#{message.senderNickName},
+			</if>
+			<if test="message.contactId!=null">
+				contact_id=#{message.contactId},
+			</if>
+			<if test="message.type!=null">
+				type=#{message.type},
+			</if>
+			<if test="message.content!=null">
+				content=#{message.content},
+			</if>
+			<if test="message.fileName!=null">
+				file_name=#{message.fileName},
+			</if>
+			<if test="message.fileType!=null">
+				file_type=#{message.fileType},
+			</if>
+			<if test="message.fileSize!=null">
+				file_size=#{message.fileSize},
+			</if>
+			<if test="message.sendTime!=null">
+				send_time=#{message.sendTime},
+			</if>
+			<if test="message.contactType!=null">
+				contact_type=#{message.contactType},
+			</if>
+			<if test="message.status!=null">
+				status=#{message.status},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+
+	<delete id="deleteById">
+		delete from message
+		where id=#{id};
+	</delete>
+
+	<select id="selectById" resultType="Message">
+		select * from message
+		where id=#{id};
+	</select>
+
+
+</mapper>
+

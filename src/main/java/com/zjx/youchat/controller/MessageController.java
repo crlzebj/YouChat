@@ -1,12 +1,12 @@
 package com.zjx.youchat.controller;
 
-import com.zjx.youchat.service.ChatSessionService;
+import com.zjx.youchat.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/chatSessions")
-public class ChatSessionController {
+@RequestMapping("/chatMessages")
+public class MessageController {
 	@Autowired
-	private ChatSessionService chatSessionService;
+	private MessageService messageService;
 }

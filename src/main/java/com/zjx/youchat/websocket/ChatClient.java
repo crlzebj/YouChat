@@ -1,4 +1,4 @@
-package com.zjx.youchat.nioChat;
+package com.zjx.youchat.websocket;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.SessionMapper">
+	<insert id="insert">
+		insert into session values
+			(#{userId},#{userNickname},#{contactId},#{contactNickname},#{id},#{lastMessage},#{lastReceiveTime});
+	</insert>
+
+	<select id="select" resultType="Session">
+		select * from session
+		<where>
+			<if test="userId!=null">
+				and user_id=#{userId}
+			</if>
+			<if test="userNickname!=null">
+				and user_nickname=#{userNickname}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="contactNickname!=null">
+				and contact_nickname=#{contactNickname}
+			</if>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="lastMessage!=null">
+				and last_message=#{lastMessage}
+			</if>
+			<if test="lastReceiveTime!=null">
+				and last_receive_time=#{lastReceiveTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(*) from session
+		<where>
+			<if test="userId!=null">
+				and user_id=#{userId}
+			</if>
+			<if test="userNickname!=null">
+				and user_nickname=#{userNickname}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="contactNickname!=null">
+				and contact_nickname=#{contactNickname}
+			</if>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="lastMessage!=null">
+				and last_message=#{lastMessage}
+			</if>
+			<if test="lastReceiveTime!=null">
+				and last_receive_time=#{lastReceiveTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="Session">
+		select * from session
+		<where>
+			<if test="session.userId!=null">
+				and user_id=#{session.userId}
+			</if>
+			<if test="session.userNickname!=null">
+				and user_nickname=#{session.userNickname}
+			</if>
+			<if test="session.contactId!=null">
+				and contact_id=#{session.contactId}
+			</if>
+			<if test="session.contactNickname!=null">
+				and contact_nickname=#{session.contactNickname}
+			</if>
+			<if test="session.id!=null">
+				and id=#{session.id}
+			</if>
+			<if test="session.lastMessage!=null">
+				and last_message=#{session.lastMessage}
+			</if>
+			<if test="session.lastReceiveTime!=null">
+				and last_receive_time=#{session.lastReceiveTime}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateByUserIdAndContactId">
+		update session
+		<set>
+			<if test="session.userId!=null">
+				user_id=#{session.userId},
+			</if>
+			<if test="session.userNickname!=null">
+				user_nickname=#{session.userNickname},
+			</if>
+			<if test="session.contactId!=null">
+				contact_id=#{session.contactId},
+			</if>
+			<if test="session.contactNickname!=null">
+				contact_nickname=#{session.contactNickname},
+			</if>
+			<if test="session.id!=null">
+				id=#{session.id},
+			</if>
+			<if test="session.lastMessage!=null">
+				last_message=#{session.lastMessage},
+			</if>
+			<if test="session.lastReceiveTime!=null">
+				last_receive_time=#{session.lastReceiveTime},
+			</if>
+		</set>
+		where user_id=#{userId} and contact_id=#{contactId};
+	</update>
+
+	<delete id="deleteByUserIdAndContactId">
+		delete from session
+		where user_id=#{userId} and contact_id=#{contactId};
+	</delete>
+
+	<select id="selectByUserIdAndContactId" resultType="Session">
+		select * from session
+		where user_id=#{userId} and contact_id=#{contactId};
+	</select>
+
+	<update id="updateById">
+		update session
+		<set>
+			<if test="session.userId!=null">
+				user_id=#{session.userId},
+			</if>
+			<if test="session.userNickname!=null">
+				user_nickname=#{session.userNickname},
+			</if>
+			<if test="session.contactId!=null">
+				contact_id=#{session.contactId},
+			</if>
+			<if test="session.contactNickname!=null">
+				contact_nickname=#{session.contactNickname},
+			</if>
+			<if test="session.id!=null">
+				id=#{session.id},
+			</if>
+			<if test="session.lastMessage!=null">
+				last_message=#{session.lastMessage},
+			</if>
+			<if test="session.lastReceiveTime!=null">
+				last_receive_time=#{session.lastReceiveTime},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+
+	<delete id="deleteById">
+		delete from session
+		where id=#{id};
+	</delete>
+
+	<select id="selectById" resultType="Session">
+		select * from session
+		where id=#{id};
+	</select>
+
+
+</mapper>
+

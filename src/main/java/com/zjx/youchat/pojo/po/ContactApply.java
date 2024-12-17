@@ -6,22 +6,22 @@ import lombok.Data;
 
 /**
  * @author zjx
- * 
+ *
  */
 @Data
 public class ContactApply implements Serializable {
-    // id
+    // 自增id
     private Integer id;
     // 申请人id
     private String applicantId;
     // 接收人id
     private String accepterId;
-    // 群组id
+    // 好友id/群组id
     private String contactId;
-    // 状态
+    // 状态 0：未处理 1：已处理
     private Integer status;
-    // 联系人申请类型
-    private Integer contactType;
+    // 类型 0：好友 1：群组
+    private Integer type;
     // 申请信息
     private String applyInfo;
     // 最后申请时间
