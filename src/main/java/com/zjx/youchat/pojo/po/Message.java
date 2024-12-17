@@ -1,6 +1,8 @@
 package com.zjx.youchat.pojo.po;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 /**
@@ -30,7 +32,7 @@ public class Message implements Serializable {
     // 文件大小
     private Long fileSize;
     // 发送时间
-    private Long sendTime;
+    private LocalDateTime sendTime;
     // 联系人类型 0：好友 1：群组
     private Integer contactType;
     // 状态 0：正在发送 1：已送达

@@ -2,22 +2,24 @@ package com.zjx.youchat.service.impl;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import com.wf.captcha.ArithmeticCaptcha;
+import com.zjx.youchat.constant.RobotConstant;
 import com.zjx.youchat.constant.UserConstant;
 import com.zjx.youchat.exception.BusinessException;
 import com.zjx.youchat.mapper.UserMapper;
 import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
-import com.zjx.youchat.pojo.po.User;
+import com.zjx.youchat.pojo.po.*;
 import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.pojo.vo.PageVO;
 
-import com.zjx.youchat.service.UserService;
+import com.zjx.youchat.service.*;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -26,10 +28,19 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
+	private UserMapper userMapper;
+
+	@Autowired
 	private StringRedisTemplate redisTemplate;
 
 	@Autowired
-	private UserMapper userMapper;
+	private UserContactService userContactService;
+
+	@Autowired
+	private SessionService sessionService;
+
+	@Autowired
+	private MessageService messageService;
 
 	@Override
 	public void insert(User user) {
@@ -115,7 +126,8 @@ public class UserServiceImpl implements UserService {
 		String uuid = UUID.randomUUID().toString();
 
 		// 在redis中存入随机的验证码key以及验证码的正确结果
-		redisTemplate.opsForValue().set(UserConstant.CAPTCHA_PREFIX + uuid, captcha.text(), Duration.ofMinutes(5));
+		redisTemplate.opsForValue().set(UserConstant.CAPTCHA_PREFIX + uuid,
+				captcha.text(), Duration.ofMinutes(1));
 
 		// 将随机的验证码key以及验证码图片的base64编码返回
 		CaptchaVO captchaVO = new CaptchaVO();
@@ -126,25 +138,31 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public void register(UserRegisterDTO userRegisterDTO) {
 		// 校验验证码
-		if (userRegisterDTO.getCaptchaKey() == null ||
-				!userRegisterDTO.getCaptchaValue().equals(redisTemplate.opsForValue().get(userRegisterDTO.getCaptchaKey()))) {
+		if (userRegisterDTO.getCaptchaKey() == null) {
+			throw new BusinessException("请输入验证码");
+		}
+		if(!userRegisterDTO.getCaptchaValue().equals(
+				redisTemplate.opsForValue().get(userRegisterDTO.getCaptchaKey()))) {
+			redisTemplate.delete(userRegisterDTO.getCaptchaKey());
 			throw new BusinessException("验证码不正确");
 		}
+		redisTemplate.delete(userRegisterDTO.getCaptchaKey());
 
 		// 校验邮箱是否可用
 		if (selectByEmail(userRegisterDTO.getEmail()) != null) {
 			throw new BusinessException("邮箱已使用");
 		}
 
-		// 为新用户创建id
+		// 为新用户分配id
 		String id = "U" + RandomStringUtils.random(7, false, true);
 		while (selectById(id) != null) {
 			id = "U" + RandomStringUtils.random(7, false, true);
 		}
 
-		// 创建新用户
+		// 数据库中插入新用户记录
 		User user = new User();
 		user.setId(id);
 		user.setEmail(userRegisterDTO.getEmail());
@@ -156,15 +174,56 @@ public class UserServiceImpl implements UserService {
 		user.setNickname(userRegisterDTO.getNickname());
 		user.setCreateTime(LocalDateTime.now());
 		insert(user);
+
+		/*
+			将聊天机器人加入新用户好友列表
+			为机器人和新用户创建会话窗口
+			机器人给新用户发送欢迎消息
+		 */
+		UserContact userContact = new UserContact();
+		userContact.setUserId(RobotConstant.ROBOT_ID);
+		userContact.setContactId(id);
+		userContact.setType(0);
+		userContact.setContactPermission(0);
+		userContact.setCreateTime(LocalDateTime.now());
+		userContact.setLastUpdateTime(LocalDateTime.now());
+		userContactService.insert(userContact);
+
+		Session session = new Session();
+		session.setUserId(id);
+		session.setContactId(RobotConstant.ROBOT_ID);
+		session.setContactNickname(RobotConstant.ROBOT_NICKNAME);
+		String sessionId = id + RobotConstant.ROBOT_ID;
+		session.setId(DigestUtil.md5Hex(sessionId.getBytes()));
+		session.setLastMessage(RobotConstant.HELLO_MESSAGE);
+		session.setLastReceiveTime(LocalDateTime.now());
+		sessionService.insert(session);
+
+		Message message = new Message();
+		message.setSessionId(DigestUtil.md5Hex(sessionId.getBytes()));
+		message.setSenderId(RobotConstant.ROBOT_ID);
+		message.setSenderNickName(RobotConstant.ROBOT_NICKNAME);
+		message.setContactId(id);
+		message.setType(0);
+		message.setContent(RobotConstant.HELLO_MESSAGE);
+		message.setSendTime(LocalDateTime.now());
+		message.setContactType(0);
+		message.setStatus(1);
+		messageService.insert(message);
 	}
 
 	@Override
 	public String login(UserLoginDTO userLoginDTO) {
 		// 校验验证码
-		if (userLoginDTO.getCaptchaKey() == null ||
-				!userLoginDTO.getCaptchaValue().equals(redisTemplate.opsForValue().get(userLoginDTO.getCaptchaKey()))) {
+		if (userLoginDTO.getCaptchaKey() == null) {
+			throw new BusinessException("请输入验证码");
+		}
+		if(!userLoginDTO.getCaptchaValue().equals(
+				redisTemplate.opsForValue().get(userLoginDTO.getCaptchaKey()))) {
+			redisTemplate.delete(userLoginDTO.getCaptchaKey());
 			throw new BusinessException("验证码不正确");
 		}
+		redisTemplate.delete(userLoginDTO.getCaptchaKey());
 
 		// 校验用户名以及密码
 		User user = userMapper.selectByEmail(userLoginDTO.getEmail());
@@ -175,10 +234,19 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// 判断用户是否被封禁
+		if (user.getStatus() == 0) {
+			throw new BusinessException("账号已被封禁");
+		}
 
 		// 判断用户是否已登录
 
-		// 查询用户好友列表、群组列表，放在redis中
+
+		// 查询用户好友列表、群组列表、会话列表、离线期间收到的消息和好友申请，放在redis中
+		List<UserContact> userContacts = userContactService.selectByUserIdOrContactId(
+				user.getId(), user.getId());
+		Session session = new Session();
+		session.setUserId(user.getId());
+		List<Session> sessions = sessionService.select(session);
 
 
 		// 生成JWT

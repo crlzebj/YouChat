@@ -115,6 +115,9 @@
 		where user_id=#{userId} and contact_id=#{contactId};
 	</select>
 
-
+	<select id="selectByUserIdOrContactId" resultType="UserContact">
+		select * from user_contact
+		where user_id=#{userId} or contact_id=#{contactId};
+	</select>
 </mapper>
 

@@ -77,4 +77,9 @@ public class UserContactServiceImpl implements UserContactService {
 	public UserContact selectByUserIdAndContactId(String userId, String contactId) {
 		return userContactMapper.selectByUserIdAndContactId(userId, contactId);
 	}
+
+	@Override
+	public List<UserContact> selectByUserIdOrContactId(String userId, String contactId) {
+		return userContactMapper.selectByUserIdOrContactId(userId, contactId);
+	}
 }

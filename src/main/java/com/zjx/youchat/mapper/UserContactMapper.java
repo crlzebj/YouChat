@@ -21,4 +21,6 @@ public interface UserContactMapper {
 	void deleteByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
 
 	UserContact selectByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
+
+	List<UserContact> selectByUserIdOrContactId(@Param("userId") String userId, @Param("contactId") String contactId);
 }

@@ -22,4 +22,6 @@ public interface UserContactService {
 	void deleteByUserIdAndContactId(String userId, String contactId);
 
 	UserContact selectByUserIdAndContactId(String userId, String contactId);
+
+	List<UserContact> selectByUserIdOrContactId(String userId, String contactId);
 }

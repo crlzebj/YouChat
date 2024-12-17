@@ -51,7 +51,8 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext,
+                                TextWebSocketFrame textWebSocketFrame) throws Exception {
         log.info(textWebSocketFrame.text());
         String responseMessage = new JfchataiRobotServiceImpl().chat(textWebSocketFrame.text());
         log.info(responseMessage);

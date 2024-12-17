@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.SessionMapper">
 	<insert id="insert">
 		insert into session values
-			(#{userId},#{userNickname},#{contactId},#{contactNickname},#{id},#{lastMessage},#{lastReceiveTime});
+			(#{userId},#{contactId},#{contactNickname},#{id},#{lastMessage},#{lastReceiveTime});
 	</insert>
 
 	<select id="select" resultType="Session">
@@ -12,9 +12,6 @@
 		<where>
 			<if test="userId!=null">
 				and user_id=#{userId}
-			</if>
-			<if test="userNickname!=null">
-				and user_nickname=#{userNickname}
 			</if>
 			<if test="contactId!=null">
 				and contact_id=#{contactId}
@@ -40,9 +37,6 @@
 			<if test="userId!=null">
 				and user_id=#{userId}
 			</if>
-			<if test="userNickname!=null">
-				and user_nickname=#{userNickname}
-			</if>
 			<if test="contactId!=null">
 				and contact_id=#{contactId}
 			</if>
@@ -66,9 +60,6 @@
 		<where>
 			<if test="session.userId!=null">
 				and user_id=#{session.userId}
-			</if>
-			<if test="session.userNickname!=null">
-				and user_nickname=#{session.userNickname}
 			</if>
 			<if test="session.contactId!=null">
 				and contact_id=#{session.contactId}
@@ -94,9 +85,6 @@
 		<set>
 			<if test="session.userId!=null">
 				user_id=#{session.userId},
-			</if>
-			<if test="session.userNickname!=null">
-				user_nickname=#{session.userNickname},
 			</if>
 			<if test="session.contactId!=null">
 				contact_id=#{session.contactId},
@@ -132,9 +120,6 @@
 		<set>
 			<if test="session.userId!=null">
 				user_id=#{session.userId},
-			</if>
-			<if test="session.userNickname!=null">
-				user_nickname=#{session.userNickname},
 			</if>
 			<if test="session.contactId!=null">
 				contact_id=#{session.contactId},
