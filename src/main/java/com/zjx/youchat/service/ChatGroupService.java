@@ -24,5 +24,5 @@ public interface ChatGroupService {
 
 	ChatGroup selectById(String id);
 
-	void register(String ownerId, ChatGroupRegisterDTO chatGroupRegisterDTO);
+	void register(String ownerId, String ownerNickname, ChatGroupRegisterDTO chatGroupRegisterDTO);
 }

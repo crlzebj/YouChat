@@ -4,7 +4,7 @@
 <mapper namespace="com.zjx.youchat.mapper.MessageMapper">
 	<insert id="insert">
 		insert into message values
-			(#{id},#{sessionId},#{senderId},#{senderNickName},#{contactId},#{type},#{content},#{fileName},#{fileType},#{fileSize},#{sendTime},#{contactType},#{status});
+			(#{id},#{sessionId},#{senderId},#{senderNickName},#{receiverId},#{type},#{content},#{fileName},#{fileType},#{fileSize},#{sendTime},#{contactType},#{status});
 	</insert>
 
 	<select id="select" resultType="Message">
@@ -22,8 +22,8 @@
 			<if test="senderNickName!=null">
 				and sender_nick_name=#{senderNickName}
 			</if>
-			<if test="contactId!=null">
-				and contact_id=#{contactId}
+			<if test="receiverId!=null">
+				and receiver_id=#{receiverId}
 			</if>
 			<if test="type!=null">
 				and type=#{type}
@@ -67,8 +67,8 @@
 			<if test="senderNickName!=null">
 				and sender_nick_name=#{senderNickName}
 			</if>
-			<if test="contactId!=null">
-				and contact_id=#{contactId}
+			<if test="receiverId!=null">
+				and receiver_id=#{receiverId}
 			</if>
 			<if test="type!=null">
 				and type=#{type}
@@ -112,8 +112,8 @@
 			<if test="message.senderNickName!=null">
 				and sender_nick_name=#{message.senderNickName}
 			</if>
-			<if test="message.contactId!=null">
-				and contact_id=#{message.contactId}
+			<if test="message.receiverId!=null">
+				and receiver_id=#{message.receiverId}
 			</if>
 			<if test="message.type!=null">
 				and type=#{message.type}
@@ -158,8 +158,8 @@
 			<if test="message.senderNickName!=null">
 				sender_nick_name=#{message.senderNickName},
 			</if>
-			<if test="message.contactId!=null">
-				contact_id=#{message.contactId},
+			<if test="message.receiverId!=null">
+				receiver_id=#{message.receiverId},
 			</if>
 			<if test="message.type!=null">
 				type=#{message.type},
@@ -199,6 +199,9 @@
 		where id=#{id};
 	</select>
 
-
+	<select id="selectByReceiverId" resultType="Message">
+		select * from message
+		where receiver_id=#{receiverId};
+	</select>
 </mapper>
 

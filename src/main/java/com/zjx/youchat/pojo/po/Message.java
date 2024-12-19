@@ -2,7 +2,6 @@ package com.zjx.youchat.pojo.po;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import lombok.Data;
 
 /**
@@ -20,7 +19,7 @@ public class Message implements Serializable {
     // 发送人昵称
     private String senderNickName;
     // 接收人ID
-    private String contactId;
+    private String receiverId;
     // 类型
     private Integer type;
     // 内容

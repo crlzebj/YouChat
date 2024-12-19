@@ -17,15 +17,17 @@ public interface SessionService {
 	PageVO<Session> selectPage(Integer pageSize, Integer pageNum);
 	PageVO<Session> selectPage(Session session, Integer pageSize, Integer pageNum);
 
-	void updateByUserIdAndContactId(String userId, String contactId, Session session);
+	void updateByInitiatorIdAndAccepterId(String initiatorId, String accepterId, Session session);
 
-	void deleteByUserIdAndContactId(String userId, String contactId);
+	void deleteByInitiatorIdAndAccepterId(String initiatorId, String accepterId);
 
-	Session selectByUserIdAndContactId(String userId, String contactId);
+	Session selectByInitiatorIdAndAccepterId(String initiatorId, String accepterId);
 
 	void updateById(String id, Session session);
 
 	void deleteById(String id);
 
 	Session selectById(String id);
+
+	List<Session> selectByInitiatorIdOrAccepterId(String initiatorId, String accepterId);
 }

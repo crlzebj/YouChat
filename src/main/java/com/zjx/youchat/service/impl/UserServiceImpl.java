@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 	private StringRedisTemplate redisTemplate;
 
 	@Autowired
-	private UserContactService userContactService;
+	private ContactService contactService;
 
 	@Autowired
 	private SessionService sessionService;
@@ -173,6 +173,8 @@ public class UserServiceImpl implements UserService {
 		user.setPermission(1);
 		user.setNickname(userRegisterDTO.getNickname());
 		user.setCreateTime(LocalDateTime.now());
+		user.setLastLoginTime(LocalDateTime.now());
+		user.setLastLogoutTime(LocalDateTime.now());
 		insert(user);
 
 		/*
@@ -180,20 +182,23 @@ public class UserServiceImpl implements UserService {
 			为机器人和新用户创建会话窗口
 			机器人给新用户发送欢迎消息
 		 */
-		UserContact userContact = new UserContact();
-		userContact.setUserId(RobotConstant.ROBOT_ID);
-		userContact.setContactId(id);
-		userContact.setType(0);
-		userContact.setContactPermission(0);
-		userContact.setCreateTime(LocalDateTime.now());
-		userContact.setLastUpdateTime(LocalDateTime.now());
-		userContactService.insert(userContact);
+		Contact contact = new Contact();
+		contact.setInitiatorId(RobotConstant.ROBOT_ID);
+		contact.setInitiatorNickname(RobotConstant.ROBOT_NICKNAME);
+		contact.setAccepterId(id);
+		contact.setAccepterNickname(user.getNickname());
+		contact.setType(0);
+		contact.setStatus(0);
+		contact.setCreateTime(LocalDateTime.now());
+		contact.setLastUpdateTime(LocalDateTime.now());
+		contactService.insert(contact);
 
 		Session session = new Session();
-		session.setUserId(id);
-		session.setContactId(RobotConstant.ROBOT_ID);
-		session.setContactNickname(RobotConstant.ROBOT_NICKNAME);
-		String sessionId = id + RobotConstant.ROBOT_ID;
+		session.setInitiatorId(RobotConstant.ROBOT_ID);
+		session.setInitiatorNickname(RobotConstant.ROBOT_NICKNAME);
+		session.setAccepterId(id);
+		session.setAccepterNickname(user.getNickname());
+		String sessionId = RobotConstant.ROBOT_ID + id;
 		session.setId(DigestUtil.md5Hex(sessionId.getBytes()));
 		session.setLastMessage(RobotConstant.HELLO_MESSAGE);
 		session.setLastReceiveTime(LocalDateTime.now());
@@ -203,7 +208,7 @@ public class UserServiceImpl implements UserService {
 		message.setSessionId(DigestUtil.md5Hex(sessionId.getBytes()));
 		message.setSenderId(RobotConstant.ROBOT_ID);
 		message.setSenderNickName(RobotConstant.ROBOT_NICKNAME);
-		message.setContactId(id);
+		message.setReceiverId(id);
 		message.setType(0);
 		message.setContent(RobotConstant.HELLO_MESSAGE);
 		message.setSendTime(LocalDateTime.now());
@@ -242,12 +247,13 @@ public class UserServiceImpl implements UserService {
 
 
 		// 查询用户好友列表、群组列表、会话列表、离线期间收到的消息和好友申请，放在redis中
-		List<UserContact> userContacts = userContactService.selectByUserIdOrContactId(
+		List<Contact> contacts = contactService.selectByInitiatorIdOrAccepterId(
 				user.getId(), user.getId());
-		Session session = new Session();
-		session.setUserId(user.getId());
-		List<Session> sessions = sessionService.select(session);
-
+		List<Session> sessions = sessionService.selectByInitiatorIdOrAccepterId(user.getId(), user.getId());
+		List<Message> messages = messageService.selectByReceiverId(user.getId());
+		System.out.println(contacts);
+		System.out.println(sessions);
+		System.out.println(messages);
 
 		// 生成JWT
 		Map<String, Object> payload = new HashMap<>();

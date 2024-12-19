@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.mapper.ContactApplicationMapper">
+	<insert id="insert">
+		insert into contact_application values
+			(#{id},#{applicantId},#{accepterId},#{contactId},#{status},#{type},#{applicationInfo},#{lastApplicationTime});
+	</insert>
+
+	<select id="select" resultType="ContactApplication">
+		select * from contact_application
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="applicantId!=null">
+				and applicant_id=#{applicantId}
+			</if>
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="type!=null">
+				and type=#{type}
+			</if>
+			<if test="applicationInfo!=null">
+				and application_info=#{applicationInfo}
+			</if>
+			<if test="lastApplicationTime!=null">
+				and last_application_time=#{lastApplicationTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(*) from contact_application
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="applicantId!=null">
+				and applicant_id=#{applicantId}
+			</if>
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="type!=null">
+				and type=#{type}
+			</if>
+			<if test="applicationInfo!=null">
+				and application_info=#{applicationInfo}
+			</if>
+			<if test="lastApplicationTime!=null">
+				and last_application_time=#{lastApplicationTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="ContactApplication">
+		select * from contact_application
+		<where>
+			<if test="contactApplication.id!=null">
+				and id=#{contactApplication.id}
+			</if>
+			<if test="contactApplication.applicantId!=null">
+				and applicant_id=#{contactApplication.applicantId}
+			</if>
+			<if test="contactApplication.accepterId!=null">
+				and accepter_id=#{contactApplication.accepterId}
+			</if>
+			<if test="contactApplication.contactId!=null">
+				and contact_id=#{contactApplication.contactId}
+			</if>
+			<if test="contactApplication.status!=null">
+				and status=#{contactApplication.status}
+			</if>
+			<if test="contactApplication.type!=null">
+				and type=#{contactApplication.type}
+			</if>
+			<if test="contactApplication.applicationInfo!=null">
+				and application_info=#{contactApplication.applicationInfo}
+			</if>
+			<if test="contactApplication.lastApplicationTime!=null">
+				and last_application_time=#{contactApplication.lastApplicationTime}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateById">
+		update contact_application
+		<set>
+			<if test="contactApplication.id!=null">
+				id=#{contactApplication.id},
+			</if>
+			<if test="contactApplication.applicantId!=null">
+				applicant_id=#{contactApplication.applicantId},
+			</if>
+			<if test="contactApplication.accepterId!=null">
+				accepter_id=#{contactApplication.accepterId},
+			</if>
+			<if test="contactApplication.contactId!=null">
+				contact_id=#{contactApplication.contactId},
+			</if>
+			<if test="contactApplication.status!=null">
+				status=#{contactApplication.status},
+			</if>
+			<if test="contactApplication.type!=null">
+				type=#{contactApplication.type},
+			</if>
+			<if test="contactApplication.applicationInfo!=null">
+				application_info=#{contactApplication.applicationInfo},
+			</if>
+			<if test="contactApplication.lastApplicationTime!=null">
+				last_application_time=#{contactApplication.lastApplicationTime},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+
+	<delete id="deleteById">
+		delete from contact_application
+		where id=#{id};
+	</delete>
+
+	<select id="selectById" resultType="ContactApplication">
+		select * from contact_application
+		where id=#{id};
+	</select>
+
+
+</mapper>
+

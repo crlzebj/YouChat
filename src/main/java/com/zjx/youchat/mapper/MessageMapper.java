@@ -21,4 +21,6 @@ public interface MessageMapper {
 	void deleteById(@Param("id") Long id);
 
 	Message selectById(@Param("id") Long id);
+
+	List<Message> selectByReceiverId(@Param("receiverId") String receiverId);
 }

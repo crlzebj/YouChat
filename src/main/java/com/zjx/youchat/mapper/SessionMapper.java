@@ -16,15 +16,18 @@ public interface SessionMapper {
 
 	List<Session> selectPage(@Param("session") Session session, @Param("offset") Integer offset, @Param("count") Integer count);
 
-	void updateByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId, @Param("session") Session session);
+	void updateByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId, @Param("session") Session session);
 
-	void deleteByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
+	void deleteByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
 
-	Session selectByUserIdAndContactId(@Param("userId") String userId, @Param("contactId") String contactId);
+	Session selectByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
 
 	void updateById(@Param("id") String id, @Param("session") Session session);
 
 	void deleteById(@Param("id") String id);
 
 	Session selectById(@Param("id") String id);
+
+	List<Session> selectByInitiatorIdOrAccepterId(@Param("initiatorId") String initiatorId,
+												  @Param("accepterId") String accepterId);
 }

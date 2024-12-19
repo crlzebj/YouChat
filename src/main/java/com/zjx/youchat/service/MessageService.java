@@ -22,4 +22,6 @@ public interface MessageService {
 	void deleteById(Long id);
 
 	Message selectById(Long id);
+
+	List<Message> selectByReceiverId(String receiverId);
 }

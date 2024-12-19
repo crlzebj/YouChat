@@ -2,7 +2,6 @@ package com.zjx.youchat.pojo.po;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import lombok.Data;
 
 /**
@@ -12,11 +11,13 @@ import lombok.Data;
 @Data
 public class Session implements Serializable {
     // 用户id
-    private String userId;
+    private String initiatorId;
+    // 用户昵称
+    private String initiatorNickname;
     // 联系人id
-    private String contactId;
+    private String accepterId;
     // 联系人昵称
-    private String contactNickname;
+    private String accepterNickname;
     // id
     private String id;
     // 最后接收的消息

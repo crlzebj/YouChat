@@ -4,20 +4,23 @@
 <mapper namespace="com.zjx.youchat.mapper.SessionMapper">
 	<insert id="insert">
 		insert into session values
-			(#{userId},#{contactId},#{contactNickname},#{id},#{lastMessage},#{lastReceiveTime});
+			(#{initiatorId},#{initiatorNickname},#{accepterId},#{accepterNickname},#{id},#{lastMessage},#{lastReceiveTime});
 	</insert>
 
 	<select id="select" resultType="Session">
 		select * from session
 		<where>
-			<if test="userId!=null">
-				and user_id=#{userId}
+			<if test="initiatorId!=null">
+				and initiator_id=#{initiatorId}
 			</if>
-			<if test="contactId!=null">
-				and contact_id=#{contactId}
+			<if test="initiatorNickname!=null">
+				and initiator_nickname=#{initiatorNickname}
 			</if>
-			<if test="contactNickname!=null">
-				and contact_nickname=#{contactNickname}
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="accepterNickname!=null">
+				and accepter_nickname=#{accepterNickname}
 			</if>
 			<if test="id!=null">
 				and id=#{id}
@@ -34,14 +37,17 @@
 	<select id="count" resultType="Integer">
 		select count(*) from session
 		<where>
-			<if test="userId!=null">
-				and user_id=#{userId}
+			<if test="initiatorId!=null">
+				and initiator_id=#{initiatorId}
 			</if>
-			<if test="contactId!=null">
-				and contact_id=#{contactId}
+			<if test="initiatorNickname!=null">
+				and initiator_nickname=#{initiatorNickname}
 			</if>
-			<if test="contactNickname!=null">
-				and contact_nickname=#{contactNickname}
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="accepterNickname!=null">
+				and accepter_nickname=#{accepterNickname}
 			</if>
 			<if test="id!=null">
 				and id=#{id}
@@ -58,14 +64,17 @@
 	<select id="selectPage" resultType="Session">
 		select * from session
 		<where>
-			<if test="session.userId!=null">
-				and user_id=#{session.userId}
+			<if test="session.initiatorId!=null">
+				and initiator_id=#{session.initiatorId}
 			</if>
-			<if test="session.contactId!=null">
-				and contact_id=#{session.contactId}
+			<if test="session.initiatorNickname!=null">
+				and initiator_nickname=#{session.initiatorNickname}
 			</if>
-			<if test="session.contactNickname!=null">
-				and contact_nickname=#{session.contactNickname}
+			<if test="session.accepterId!=null">
+				and accepter_id=#{session.accepterId}
+			</if>
+			<if test="session.accepterNickname!=null">
+				and accepter_nickname=#{session.accepterNickname}
 			</if>
 			<if test="session.id!=null">
 				and id=#{session.id}
@@ -80,17 +89,20 @@
 		limit #{offset},#{count};
 	</select>
 
-	<update id="updateByUserIdAndContactId">
+	<update id="updateByInitiatorIdAndAccepterId">
 		update session
 		<set>
-			<if test="session.userId!=null">
-				user_id=#{session.userId},
+			<if test="session.initiatorId!=null">
+				initiator_id=#{session.initiatorId},
 			</if>
-			<if test="session.contactId!=null">
-				contact_id=#{session.contactId},
+			<if test="session.initiatorNickname!=null">
+				initiator_nickname=#{session.initiatorNickname},
 			</if>
-			<if test="session.contactNickname!=null">
-				contact_nickname=#{session.contactNickname},
+			<if test="session.accepterId!=null">
+				accepter_id=#{session.accepterId},
+			</if>
+			<if test="session.accepterNickname!=null">
+				accepter_nickname=#{session.accepterNickname},
 			</if>
 			<if test="session.id!=null">
 				id=#{session.id},
@@ -102,30 +114,33 @@
 				last_receive_time=#{session.lastReceiveTime},
 			</if>
 		</set>
-		where user_id=#{userId} and contact_id=#{contactId};
+		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</update>
 
-	<delete id="deleteByUserIdAndContactId">
+	<delete id="deleteByInitiatorIdAndAccepterId">
 		delete from session
-		where user_id=#{userId} and contact_id=#{contactId};
+		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</delete>
 
-	<select id="selectByUserIdAndContactId" resultType="Session">
+	<select id="selectByInitiatorIdAndAccepterId" resultType="Session">
 		select * from session
-		where user_id=#{userId} and contact_id=#{contactId};
+		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</select>
 
 	<update id="updateById">
 		update session
 		<set>
-			<if test="session.userId!=null">
-				user_id=#{session.userId},
+			<if test="session.initiatorId!=null">
+				initiator_id=#{session.initiatorId},
 			</if>
-			<if test="session.contactId!=null">
-				contact_id=#{session.contactId},
+			<if test="session.initiatorNickname!=null">
+				initiator_nickname=#{session.initiatorNickname},
 			</if>
-			<if test="session.contactNickname!=null">
-				contact_nickname=#{session.contactNickname},
+			<if test="session.accepterId!=null">
+				accepter_id=#{session.accepterId},
+			</if>
+			<if test="session.accepterNickname!=null">
+				accepter_nickname=#{session.accepterNickname},
 			</if>
 			<if test="session.id!=null">
 				id=#{session.id},
@@ -150,6 +165,10 @@
 		where id=#{id};
 	</select>
 
+	<select id="selectByInitiatorIdOrAccepterId" resultType="Session">
+		select * from session
+		where initiator_id=#{initiatorId} or accepter_id=#{accepterId};
+	</select>
 
 </mapper>
 

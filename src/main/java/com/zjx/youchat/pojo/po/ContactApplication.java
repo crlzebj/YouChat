@@ -9,7 +9,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ContactApply implements Serializable {
+public class ContactApplication implements Serializable {
     // 自增id
     private Integer id;
     // 申请人id
@@ -23,7 +23,7 @@ public class ContactApply implements Serializable {
     // 类型 0：好友 1：群组
     private Integer type;
     // 申请信息
-    private String applyInfo;
+    private String applicationInfo;
     // 最后申请时间
-    private LocalDateTime lastApplyTime;
+    private LocalDateTime lastApplicationTime;
 }

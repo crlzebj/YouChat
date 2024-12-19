@@ -77,4 +77,9 @@ public class MessageServiceImpl implements MessageService {
 	public Message selectById(Long id) {
 		return messageMapper.selectById(id);
 	}
+
+	@Override
+	public List<Message> selectByReceiverId(String receiverId) {
+		return messageMapper.selectByReceiverId(receiverId);
+	}
 }

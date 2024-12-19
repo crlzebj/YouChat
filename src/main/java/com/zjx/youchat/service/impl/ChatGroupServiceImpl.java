@@ -1,15 +1,18 @@
 package com.zjx.youchat.service.impl;
 
+import cn.hutool.crypto.digest.DigestUtil;
 import com.zjx.youchat.configuration.ProjectConfig;
 import com.zjx.youchat.exception.BusinessException;
 import com.zjx.youchat.mapper.ChatGroupMapper;
-import com.zjx.youchat.mapper.UserContactMapper;
 import com.zjx.youchat.pojo.dto.ChatGroupRegisterDTO;
 import com.zjx.youchat.pojo.po.ChatGroup;
-import com.zjx.youchat.pojo.po.UserContact;
+import com.zjx.youchat.pojo.po.Contact;
+import com.zjx.youchat.pojo.po.Session;
 import com.zjx.youchat.pojo.vo.PageVO;
 
 import com.zjx.youchat.service.ChatGroupService;
+import com.zjx.youchat.service.ContactService;
+import com.zjx.youchat.service.SessionService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +34,10 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 	private ChatGroupMapper chatGroupMapper;
 
 	@Autowired
-	private UserContactMapper userContactMapper;
+	private ContactService contactService;
+
+	@Autowired
+	private SessionService sessionService;
 
 	@Override
 	public void insert(ChatGroup chatGroup) {
@@ -98,9 +104,10 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 
 	@Override
 	@Transactional
-	public void register(String ownerId, ChatGroupRegisterDTO chatGroupRegisterDTO) {
+	public void register(String ownerId, String ownerNickname, ChatGroupRegisterDTO chatGroupRegisterDTO) {
+		// 数据库中插入新群组记录
 		ChatGroup chatGroup = new ChatGroup();
-		// 为新用户创建id
+		// 为新群组创建id
 		String id = "G" + RandomStringUtils.random(7, false, true);
 		while (selectById(id) != null) {
 			id = "G" + RandomStringUtils.random(7, false, true);
@@ -126,13 +133,30 @@ public class ChatGroupServiceImpl implements ChatGroupService {
 		}
 		chatGroupMapper.insert(chatGroup);
 
-		UserContact userContact = new UserContact();
-		userContact.setUserId(ownerId);
-		userContact.setContactId(chatGroup.getId());
-		userContact.setType(1);
-		userContact.setContactPermission(1);
-		userContact.setCreateTime(LocalDateTime.now());
-		userContact.setLastUpdateTime(LocalDateTime.now());
-		userContactMapper.insert(userContact);
+		/*
+			将新群组加入群主好友列表
+			为新群组和群主创建会话窗口
+		 */
+		Contact contact = new Contact();
+		contact.setInitiatorId(ownerId);
+		contact.setInitiatorNickname(ownerNickname);
+		contact.setAccepterId(chatGroup.getId());
+		contact.setAccepterNickname(chatGroup.getNickname());
+		contact.setType(1);
+		contact.setStatus(0);
+		contact.setCreateTime(LocalDateTime.now());
+		contact.setLastUpdateTime(LocalDateTime.now());
+		contactService.insert(contact);
+
+		Session session = new Session();
+		session.setInitiatorId(ownerId);
+		session.setInitiatorNickname(ownerNickname);
+		session.setAccepterId(chatGroup.getId());
+		session.setAccepterNickname(chatGroup.getNickname());
+		String sessionId = chatGroup.getId() + ownerId;
+		session.setId(DigestUtil.md5Hex(sessionId.getBytes()));
+		session.setLastMessage(null);
+		session.setLastReceiveTime(null);
+		sessionService.insert(session);
 	}
 }

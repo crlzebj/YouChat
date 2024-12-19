@@ -19,8 +19,11 @@ public class ChatGroupController {
 	@PostMapping("register")
 	public ResponseVO register(HttpServletRequest request, ChatGroupRegisterDTO chatGroupRegisterDTO) {
 		String token = request.getHeader("token");
-		String ownerId = (String) Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).parseClaimsJws(token).getBody().get("id");
-		chatGroupService.register(ownerId, chatGroupRegisterDTO);
+		String ownerId = (String) Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).
+				parseClaimsJws(token).getBody().get("id");
+		String ownerNickname = (String) Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).
+				parseClaimsJws(token).getBody().get("nickname");
+		chatGroupService.register(ownerId, ownerNickname, chatGroupRegisterDTO);
 		return ResponseVO.success();
 	}
 }

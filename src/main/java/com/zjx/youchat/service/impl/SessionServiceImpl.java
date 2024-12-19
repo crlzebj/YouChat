@@ -64,18 +64,18 @@ public class SessionServiceImpl implements SessionService {
 
 
 	@Override
-	public void updateByUserIdAndContactId(String userId, String contactId, Session session) {
-		sessionMapper.updateByUserIdAndContactId(userId, contactId, session);
+	public void updateByInitiatorIdAndAccepterId(String initiatorId, String accepterId, Session session) {
+		sessionMapper.updateByInitiatorIdAndAccepterId(initiatorId, accepterId, session);
 	}
 
 	@Override
-	public void deleteByUserIdAndContactId(String userId, String contactId) {
-		sessionMapper.deleteByUserIdAndContactId(userId, contactId);
+	public void deleteByInitiatorIdAndAccepterId(String initiatorId, String accepterId) {
+		sessionMapper.deleteByInitiatorIdAndAccepterId(initiatorId, accepterId);
 	}
 
 	@Override
-	public Session selectByUserIdAndContactId(String userId, String contactId) {
-		return sessionMapper.selectByUserIdAndContactId(userId, contactId);
+	public Session selectByInitiatorIdAndAccepterId(String initiatorId, String accepterId) {
+		return sessionMapper.selectByInitiatorIdAndAccepterId(initiatorId, accepterId);
 	}
 
 	@Override
@@ -91,5 +91,10 @@ public class SessionServiceImpl implements SessionService {
 	@Override
 	public Session selectById(String id) {
 		return sessionMapper.selectById(id);
+	}
+
+	@Override
+	public List<Session> selectByInitiatorIdOrAccepterId(String initiatorId, String accepterId) {
+		return sessionMapper.selectByInitiatorIdOrAccepterId(initiatorId, accepterId);
 	}
 }
