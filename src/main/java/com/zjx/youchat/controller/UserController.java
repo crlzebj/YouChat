@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UserController {
 	@Autowired
 	private UserService userService;
@@ -21,7 +21,7 @@ public class UserController {
 	 * 获取验证码
 	 * @return
 	 */
-	@GetMapping("captcha")
+	@GetMapping("/captcha")
 	public ResponseVO<CaptchaVO> getCaptcha() {
 		CaptchaVO captchavo = userService.getCaptcha();
 		return ResponseVO.success(captchavo);
@@ -32,7 +32,7 @@ public class UserController {
 	 * @param userRegisterDTO
 	 * @return
 	 */
-	@PostMapping("register")
+	@PostMapping("/register")
 	public ResponseVO register(@RequestBody UserRegisterDTO userRegisterDTO) {
 		userService.register(userRegisterDTO);
 		return ResponseVO.success();
@@ -43,7 +43,7 @@ public class UserController {
 	 * @param userLoginDTO
 	 * @return
 	 */
-	@PostMapping("login")
+	@PostMapping("/login")
 	public ResponseVO<Map<String, String>> login(@RequestBody UserLoginDTO userLoginDTO) {
 		Map<String, String> loginvo = new HashMap<>();
 		loginvo.put("token", userService.login(userLoginDTO));

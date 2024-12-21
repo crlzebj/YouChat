@@ -1,6 +1,7 @@
 package com.zjx.youchat.service.impl;
 
 import cn.hutool.crypto.digest.DigestUtil;
+import com.alibaba.fastjson.JSON;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.zjx.youchat.constant.RobotConstant;
 import com.zjx.youchat.constant.UserConstant;
@@ -8,6 +9,7 @@ import com.zjx.youchat.exception.BusinessException;
 import com.zjx.youchat.mapper.UserMapper;
 import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
+import com.zjx.youchat.pojo.dto.UserInfoDTO;
 import com.zjx.youchat.pojo.po.*;
 import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.pojo.vo.PageVO;
@@ -249,13 +251,20 @@ public class UserServiceImpl implements UserService {
 		// 查询用户好友列表、群组列表、会话列表、离线期间收到的消息和好友申请，放在redis中
 		List<Contact> contacts = contactService.selectByInitiatorIdOrAccepterId(
 				user.getId(), user.getId());
+		List<List<Contact>> list = contactService.splitContact(user.getId(), contacts);
+		List<Contact> userContacts = list.get(0);
+		List<Contact> chatGroupContacts = list.get(1);
 		List<Session> sessions = sessionService.selectByInitiatorIdOrAccepterId(user.getId(), user.getId());
 		List<Message> messages = messageService.selectByReceiverId(user.getId());
-		System.out.println(contacts);
-		System.out.println(sessions);
-		System.out.println(messages);
+		UserInfoDTO userInfoDTO = new UserInfoDTO();
+		userInfoDTO.setUserContacts(userContacts);
+		userInfoDTO.setChatGroupContacts(chatGroupContacts);
+		userInfoDTO.setSessions(sessions);
+		userInfoDTO.setMessages(messages);
+		redisTemplate.opsForValue().set(UserConstant.USER_INITIAL_INFO_PREFIX + user.getId(),
+				JSON.toJSONString(userInfoDTO), Duration.ofMinutes(5));
 
-		// 生成JWT
+        // 生成JWT
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("id", user.getId());
 		payload.put("email", user.getEmail());

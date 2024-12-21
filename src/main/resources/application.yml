@@ -35,6 +35,7 @@ mybatis:
 
 # 项目配置
 you-chat:
+  websocket-port: 9090
   server:
     # 服务端数据存储目录
     data-path: D:\projects\ProjectData\YouChat

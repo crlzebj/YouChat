@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/contactApplys")
-public class ContactApplyController {
+@RequestMapping("/contactApplications")
+public class ContactApplicationController {
 	@Autowired
 	private ContactApplicationService contactApplicationService;
 }

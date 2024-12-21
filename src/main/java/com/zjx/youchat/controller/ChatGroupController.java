@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("chatGroups")
+@RequestMapping("/chatGroups")
 public class ChatGroupController {
 	@Autowired
 	private ChatGroupService chatGroupService;
 
-	@PostMapping("register")
+	@PostMapping("/register")
 	public ResponseVO register(HttpServletRequest request, ChatGroupRegisterDTO chatGroupRegisterDTO) {
 		String token = request.getHeader("token");
-		String ownerId = (String) Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).
-				parseClaimsJws(token).getBody().get("id");
-		String ownerNickname = (String) Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).
-				parseClaimsJws(token).getBody().get("nickname");
+		String ownerId = Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).
+				parseClaimsJws(token).getBody().get("id", String.class);
+		String ownerNickname = Jwts.parser().setSigningKey(UserConstant.SECRET_KEY).
+				parseClaimsJws(token).getBody().get("nickname", String.class);
 		chatGroupService.register(ownerId, ownerNickname, chatGroupRegisterDTO);
 		return ResponseVO.success();
 	}

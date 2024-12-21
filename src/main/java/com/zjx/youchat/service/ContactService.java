@@ -24,4 +24,6 @@ public interface ContactService {
 	Contact selectByInitiatorIdAndAccepterId(String initiatorId, String accepterId);
 
 	List<Contact> selectByInitiatorIdOrAccepterId(String initiatorId, String accepterId);
+
+	public List<List<Contact>> splitContact(String userId, List<Contact> contacts);
 }
