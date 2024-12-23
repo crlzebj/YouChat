@@ -6,6 +6,9 @@ import com.wf.captcha.ArithmeticCaptcha;
 import com.zjx.youchat.constant.RobotConstant;
 import com.zjx.youchat.constant.UserConstant;
 import com.zjx.youchat.exception.BusinessException;
+import com.zjx.youchat.mapper.ContactMapper;
+import com.zjx.youchat.mapper.MessageMapper;
+import com.zjx.youchat.mapper.SessionMapper;
 import com.zjx.youchat.mapper.UserMapper;
 import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
@@ -15,6 +18,7 @@ import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.pojo.vo.PageVO;
 
 import com.zjx.youchat.service.*;
+import com.zjx.youchat.util.ContactUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,13 +40,13 @@ public class UserServiceImpl implements UserService {
 	private StringRedisTemplate redisTemplate;
 
 	@Autowired
-	private ContactService contactService;
+	private ContactMapper contactMapper;
 
 	@Autowired
-	private SessionService sessionService;
+	private SessionMapper sessionMapper;
 
 	@Autowired
-	private MessageService messageService;
+	private MessageMapper messageMapper;
 
 	@Override
 	public void insert(User user) {
@@ -193,7 +197,7 @@ public class UserServiceImpl implements UserService {
 		contact.setStatus(0);
 		contact.setCreateTime(LocalDateTime.now());
 		contact.setLastUpdateTime(LocalDateTime.now());
-		contactService.insert(contact);
+		contactMapper.insert(contact);
 
 		Session session = new Session();
 		session.setInitiatorId(RobotConstant.ROBOT_ID);
@@ -204,7 +208,7 @@ public class UserServiceImpl implements UserService {
 		session.setId(DigestUtil.md5Hex(sessionId.getBytes()));
 		session.setLastMessage(RobotConstant.HELLO_MESSAGE);
 		session.setLastReceiveTime(LocalDateTime.now());
-		sessionService.insert(session);
+		sessionMapper.insert(session);
 
 		Message message = new Message();
 		message.setSessionId(DigestUtil.md5Hex(sessionId.getBytes()));
@@ -216,7 +220,7 @@ public class UserServiceImpl implements UserService {
 		message.setSendTime(LocalDateTime.now());
 		message.setContactType(0);
 		message.setStatus(1);
-		messageService.insert(message);
+		messageMapper.insert(message);
 	}
 
 	@Override
@@ -249,13 +253,13 @@ public class UserServiceImpl implements UserService {
 
 
 		// 查询用户好友列表、群组列表、会话列表、离线期间收到的消息和好友申请，放在redis中
-		List<Contact> contacts = contactService.selectByInitiatorIdOrAccepterId(
+		List<Contact> contacts = contactMapper.selectByInitiatorIdOrAccepterId(
 				user.getId(), user.getId());
-		List<List<Contact>> list = contactService.splitContact(user.getId(), contacts);
+		List<List<Contact>> list = ContactUtil.splitContact(user.getId(), contacts);
 		List<Contact> userContacts = list.get(0);
 		List<Contact> chatGroupContacts = list.get(1);
-		List<Session> sessions = sessionService.selectByInitiatorIdOrAccepterId(user.getId(), user.getId());
-		List<Message> messages = messageService.selectByReceiverId(user.getId());
+		List<Session> sessions = sessionMapper.selectByInitiatorIdOrAccepterId(user.getId(), user.getId());
+		List<Message> messages = messageMapper.selectByReceiverId(user.getId());
 		UserInfoDTO userInfoDTO = new UserInfoDTO();
 		userInfoDTO.setUserContacts(userContacts);
 		userInfoDTO.setChatGroupContacts(chatGroupContacts);

@@ -1,6 +1,8 @@
 package com.zjx.youchat.service;
 
+import com.zjx.youchat.pojo.dto.ContactAddDTO;
 import com.zjx.youchat.pojo.po.Contact;
+import com.zjx.youchat.pojo.vo.ContactSearchVO;
 import com.zjx.youchat.pojo.vo.PageVO;
 
 import java.util.List;
@@ -25,5 +27,7 @@ public interface ContactService {
 
 	List<Contact> selectByInitiatorIdOrAccepterId(String initiatorId, String accepterId);
 
-	public List<List<Contact>> splitContact(String userId, List<Contact> contacts);
+	ContactSearchVO search(String contactId);
+
+	void add(ContactAddDTO contactAddDTO);
 }
