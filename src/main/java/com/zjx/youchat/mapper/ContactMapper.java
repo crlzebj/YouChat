@@ -1,6 +1,8 @@
 package com.zjx.youchat.mapper;
 
 import com.zjx.youchat.pojo.po.Contact;
+import com.zjx.youchat.pojo.po.GroupContact;
+import com.zjx.youchat.pojo.po.UserContact;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +23,12 @@ public interface ContactMapper {
 	void deleteByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
 
 	Contact selectByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
+
+	List<UserContact> queryUserContactByInitiatorId(@Param("initiatorId") String initiatorId);
+
+	List<UserContact> queryUserContactByAccepterId(@Param("accepterId") String accepterId);
+
+	List<GroupContact> queryGroupContactByInitiatorId(@Param("initiatorId") String initiatorId);
+
+	List<GroupContact> queryGroupContactByAccepterId(@Param("accepterId") String accepterId);
 }

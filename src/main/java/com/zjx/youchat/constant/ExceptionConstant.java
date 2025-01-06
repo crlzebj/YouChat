@@ -9,4 +9,5 @@ public class ExceptionConstant {
     public static final String USER_NOT_EXIST = "用户不存在";
     public static final String GROUP_NOT_EXIST = "群组不存在";
     public static final String ILLEGAL_REQUEST = "非法请求";
+    public static final String WEBSOCKET_PACKAGE_FORMAT_ERROR = "WebSocket包格式错误";
 }

@@ -1,7 +1,5 @@
 package com.zjx.youchat.websocket;
 
-import com.zjx.youchat.constant.ProjectConstant;
-import com.zjx.youchat.websocket.handler.WebSocketChatHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -12,15 +10,16 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ChatServer implements ApplicationRunner {
-    @Autowired
-    private ProjectConstant projectConstant;
+public class WebSocketServer implements ApplicationRunner {
+    @Value("${you-chat.websocket-port}")
+    private Integer port;
 
     @Autowired
     private WebSocketChatHandler webSocketChatHandler;
@@ -30,8 +29,8 @@ public class ChatServer implements ApplicationRunner {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         String portStr = System.getProperty("websocket.port");
-        int port = portStr == null || portStr.isEmpty() ?
-                projectConstant.getWebsocketPort() : Integer.parseInt(portStr);
+        int port = (portStr == null || portStr.isEmpty()) ?
+                this.port : Integer.parseInt(portStr);
         try {
             // 启动服务端
             ChannelFuture channelFuture = new ServerBootstrap()
@@ -54,8 +53,9 @@ public class ChatServer implements ApplicationRunner {
             // 关闭服务端
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("WebSocket服务器异常：{}", e.getMessage());
         } finally {
+            // 释放资源
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }

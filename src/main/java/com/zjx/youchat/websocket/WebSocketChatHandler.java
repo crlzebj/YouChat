@@ -1,18 +1,21 @@
-package com.zjx.youchat.websocket.handler;
+package com.zjx.youchat.websocket;
 
 import com.alibaba.fastjson.JSON;
+import com.zjx.youchat.constant.ExceptionConstant;
 import com.zjx.youchat.exception.BusinessException;
+import com.zjx.youchat.pojo.dto.UserInfoDTO;
 import com.zjx.youchat.pojo.dto.WebSocketPackage;
-import com.zjx.youchat.websocket.ChannelManager;
-import com.zjx.youchat.websocket.RedissonService;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -20,11 +23,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
     private ChannelManager channelManager;
+
     @Autowired
     private RedissonService redissonService;
 
-/*    private Claims login(String uri) {
+    private UserInfoDTO authenticate(String uri) {
         if (!uri.contains("?")) {
             return null;
         }
@@ -36,18 +43,20 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
             if (key.compareTo("token") != 0) {
                 continue;
             }
-            Claims claims = null;
-            try {
-                claims = Jwts.parser()
-                        .setSigningKey(UserConstant.SECRET_KEY)
-                        .parseClaimsJws(value)
-                        .getBody();
-            } catch (Exception e) {
+            String userInfoStr = redisTemplate.opsForValue().get(value);
+            if (userInfoStr == null) {
                 return null;
             }
-            return claims;
+            return JSON.parseObject(userInfoStr, UserInfoDTO.class);
         }
         return null;
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        AttributeKey<String> attributeKey = AttributeKey.valueOf("userId");
+        String userId = ctx.channel().attr(attributeKey).get();
+        channelManager.cancelChannel(userId);
     }
 
     @Override
@@ -57,28 +66,42 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
         }
         WebSocketServerProtocolHandler.HandshakeComplete handshakeComplete =
                 (WebSocketServerProtocolHandler.HandshakeComplete) evt;
-        Claims claims = login(handshakeComplete.requestUri());
-        if (claims == null) {
+        UserInfoDTO userInfo = authenticate(handshakeComplete.requestUri());
+        if (userInfo == null) {
+            log.info(ExceptionConstant.TOKEN_FAILED);
             ctx.channel().close();
-            throw new BusinessException("身份验证未通过");
+            return;
         }
-        String userId = claims.get("id", String.class);
+        String userId = userInfo.getId();
         Channel channel = ctx.channel();
+
+        // 将userId绑定到Channel上
+        AttributeKey<String> attributeKey = null;
+        if (AttributeKey.exists("userId")) {
+            attributeKey = AttributeKey.valueOf("userId");
+        } else {
+            attributeKey = AttributeKey.newInstance("userId");
+        }
+        channel.attr(attributeKey).setIfAbsent(userId);
+
+        //注册Channel
         channelManager.registerChannel(userId, channel);
-    }*/
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext,
                                 TextWebSocketFrame textWebSocketFrame) throws Exception {
         Attribute<String> attribute = channelHandlerContext.channel()
-                .attr(AttributeKey.valueOf(channelHandlerContext.channel().id().toString()));
+                .attr(AttributeKey.valueOf("userId"));
         String userId = attribute.get();
         log.info("{}: {}", userId, textWebSocketFrame.text());
-        WebSocketPackage websocketPackage = JSON.parseObject(textWebSocketFrame.text(),
-                WebSocketPackage.class);
-        if (websocketPackage == null) {
-            throw new BusinessException("JSON解析出错");
+
+        try {
+            WebSocketPackage websocketPackage = JSON.parseObject(textWebSocketFrame.text(),
+                    WebSocketPackage.class);
+            redissonService.publish(websocketPackage);
+        } catch (Exception e) {
+            log.info("WebSocket服务器异常：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
         }
-        redissonService.publish(websocketPackage);
     }
 }

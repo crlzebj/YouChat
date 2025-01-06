@@ -1,4 +1,4 @@
-package com.zjx.youchat.websocket.handler;
+package com.zjx.youchat.websocket;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;

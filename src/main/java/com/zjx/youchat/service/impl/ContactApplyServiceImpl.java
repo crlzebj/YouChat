@@ -3,7 +3,6 @@ package com.zjx.youchat.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.zjx.youchat.constant.ExceptionConstant;
 import com.zjx.youchat.constant.UserConstant;
-import com.zjx.youchat.constant.WebsocketPackageConstant;
 import com.zjx.youchat.exception.BusinessException;
 import com.zjx.youchat.mapper.ContactApplyMapper;
 import com.zjx.youchat.mapper.GroupMapper;

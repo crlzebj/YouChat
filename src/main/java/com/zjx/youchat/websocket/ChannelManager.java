@@ -2,15 +2,19 @@ package com.zjx.youchat.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.zjx.youchat.constant.enums.WebSocketPackageEnum;
+import com.zjx.youchat.mapper.ContactMapper;
 import com.zjx.youchat.pojo.dto.WebSocketPackage;
+import com.zjx.youchat.pojo.po.GroupContact;
+import com.zjx.youchat.pojo.po.UserContact;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.util.AttributeKey;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -19,16 +23,17 @@ import java.util.concurrent.*;
 @Component
 public class ChannelManager {
     // 存放userId和Channel的对应关系
-    private final ConcurrentHashMap<String, Channel> userIdToChannelMap;
+    private final ConcurrentHashMap<String, Channel> userIdToChannel;
+
     // 存放groupId和ChannelGroup的对应关系
-    private final ConcurrentHashMap<String, ChannelGroup> groupIdToChannelGroupMap;
+    private final ConcurrentHashMap<String, ChannelGroup> groupIdToChannelGroup;
 
     @Autowired
-    StringRedisTemplate redisTemplate;
+    private ContactMapper contactMapper;
 
     public ChannelManager() {
-        userIdToChannelMap = new ConcurrentHashMap<>();
-        groupIdToChannelGroupMap = new ConcurrentHashMap<>();
+        userIdToChannel = new ConcurrentHashMap<>();
+        groupIdToChannelGroup = new ConcurrentHashMap<>();
     }
 
     /**
@@ -37,38 +42,35 @@ public class ChannelManager {
      * @param channel
      */
     public void registerChannel(String userId, Channel channel) {
-        // 将userId绑定到对应Channel上
-        String channelId = channel.id().toString();
-        AttributeKey<String> key = null;
-        if (AttributeKey.exists(userId)) {
-            key = AttributeKey.valueOf(channelId);
-        } else {
-            key = AttributeKey.newInstance(channelId);
-        }
-        channel.attr(key).set(userId);
+        // 将Channel加入map，以供该用户收发消息使用
+        userIdToChannel.put(userId, channel);
 
-        // 将用户channel加入map，以供给该用户发消息时使用
-        userIdToChannelMap.put(userId, channel);
-//        String userInitialInfoJSON = redisTemplate.opsForValue().get(UserConstant.USER_INITIAL_INFO_PREFIX + userId);
-//
-//        // 将用户channel加入群组的ChannelGroup，给该群组发消息时会发给群组中的所有channel
-//        UserInfoDTO userInfoDTO = JSON.parseObject(userInitialInfoJSON, UserInfoDTO.class);
-//        if (userInfoDTO == null) {
-//            throw new BusinessException("JSON解析出错");
-//        }
-//        List<Contact> chatGroupContacts = userInfoDTO.getChatGroupContacts();
-//        for (Contact chatGroupContact : chatGroupContacts) {
-//            if (groupIdToChannelGroupMap.get(chatGroupContact.getAccepterId()) == null) {
-//                groupIdToChannelGroupMap.put(chatGroupContact.getAccepterId(),
-//                        new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
-//            }
-//            groupIdToChannelGroupMap.get(chatGroupContact.getAccepterId()).add(channel);
-//        }
-//        WebSocketPackage websocketPackage = new WebSocketPackage();
-//        websocketPackage.setType(WebsocketPackageConstant.USER_INFO_TYPE);
-//        websocketPackage.setReceiverId(userId);
-//        websocketPackage.setData(userInfoDTO);
-//        sendWebSocketPackageDTO(websocketPackage);
+        // TODO发送websocket消息
+        // 查询用户的所有好友、群组、会话、申请以及消息
+        // 好友
+        List<UserContact> userContacts = contactMapper.queryUserContactByInitiatorId(userId);
+        userContacts.addAll(contactMapper.queryUserContactByAccepterId(userId));
+
+        // 群组
+        List<GroupContact> groupContacts1 = contactMapper.queryGroupContactByInitiatorId(userId);
+        List<GroupContact> groupContacts2 = contactMapper.queryGroupContactByAccepterId(userId);
+
+        // 将用户Channel加入群组的ChannelGroup，给该群组发消息时会发给群组中的所有用户
+        for (GroupContact groupContact : groupContacts1) {
+            if (groupIdToChannelGroup.get(groupContact.getAccepterId()) == null) {
+                groupIdToChannelGroup.put(groupContact.getAccepterId(),
+                        new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+            }
+            groupIdToChannelGroup.get(groupContact.getAccepterId()).add(channel);
+        }
+        for (GroupContact groupContact : groupContacts2) {
+            if (groupIdToChannelGroup.get(groupContact.getInitiatorId()) == null) {
+                groupIdToChannelGroup.put(groupContact.getInitiatorId(),
+                        new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+            }
+            groupIdToChannelGroup.get(groupContact.getInitiatorId()).add(channel);
+        }
+        groupContacts1.addAll(groupContacts2);
     }
 
     /**
@@ -77,12 +79,12 @@ public class ChannelManager {
      */
     public void cancelChannel(String userId) {
         // ChannelGroup会自动移除其中已经关闭的Channel
-        Channel channel = userIdToChannelMap.get(userId);
+        Channel channel = userIdToChannel.get(userId);
         if (channel == null) {
             return;
         }
         channel.close();
-        userIdToChannelMap.remove(userId);
+        userIdToChannel.remove(userId);
     }
 
     /**
@@ -91,15 +93,15 @@ public class ChannelManager {
      */
     public void sendWebSocketPackageDTO(WebSocketPackage websocketPackage) {
         String receiverId = websocketPackage.getReceiverId();
-        if (!userIdToChannelMap.containsKey(receiverId)) {
+        if (!userIdToChannel.containsKey(receiverId)) {
             return;
         }
-        userIdToChannelMap.get(receiverId)
+        userIdToChannel.get(receiverId)
                 .writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(websocketPackage)));
         if (WebSocketPackageEnum.getInstanceByValue(websocketPackage.getType())
                 == WebSocketPackageEnum.ACCOUNT_BANNED) {
-            userIdToChannelMap.get(receiverId).close();
-            userIdToChannelMap.remove(receiverId);
+            userIdToChannel.get(receiverId).close();
+            userIdToChannel.remove(receiverId);
         }
     }
 }
