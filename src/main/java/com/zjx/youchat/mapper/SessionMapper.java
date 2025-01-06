@@ -27,7 +27,4 @@ public interface SessionMapper {
 	void deleteById(@Param("id") String id);
 
 	Session selectById(@Param("id") String id);
-
-	List<Session> selectByInitiatorIdOrAccepterId(@Param("initiatorId") String initiatorId,
-												  @Param("accepterId") String accepterId);
 }

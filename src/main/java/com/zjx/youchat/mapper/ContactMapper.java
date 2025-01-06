@@ -21,6 +21,4 @@ public interface ContactMapper {
 	void deleteByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
 
 	Contact selectByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
-
-	List<Contact> selectByInitiatorIdOrAccepterId(@Param("initiatorId") String userId, @Param("accepterId") String contactId);
 }

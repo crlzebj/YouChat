@@ -15,20 +15,20 @@ public class ResponseVO<T> implements Serializable {
     private T data; //数据
 
     public static <T> ResponseVO<T> success() {
-        ResponseVO<T> responseVO = new ResponseVO<T>();
+        ResponseVO<T> responseVO = new ResponseVO<>();
         responseVO.code = 1;
         return responseVO;
     }
 
     public static <T> ResponseVO<T> success(T object) {
-        ResponseVO<T> responseVO = new ResponseVO<T>();
+        ResponseVO<T> responseVO = new ResponseVO<>();
         responseVO.code = 1;
         responseVO.data = object;
         return responseVO;
     }
 
     public static <T> ResponseVO<T> error(String msg) {
-        ResponseVO<T> responseVO = new ResponseVO<T>();
+        ResponseVO<T> responseVO = new ResponseVO<>();
         responseVO.code = 0;
         responseVO.msg = msg;
         return responseVO;

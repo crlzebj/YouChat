@@ -1,27 +1,24 @@
 package com.zjx.youchat.pojo.po;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import lombok.Data;
 
 /**
  * @author zjx
- *
+ * 会话表
  */
 @Data
 public class Session implements Serializable {
-    // 用户id
-    private String initiatorId;
-    // 用户昵称
-    private String initiatorNickname;
-    // 联系人id
-    private String accepterId;
-    // 联系人昵称
-    private String accepterNickname;
-    // id
+    // 会话id
     private String id;
-    // 最后接收的消息
+    // 会话发起者id
+    private String initiatorId;
+    // 会话接收者id
+    private String accepterId;
+    // 最后的消息
     private String lastMessage;
-    // 最后接收消息的时间
-    private LocalDateTime lastReceiveTime;
+    // 最后的消息的发送时间
+    private LocalDateTime lastSendTime;
 }

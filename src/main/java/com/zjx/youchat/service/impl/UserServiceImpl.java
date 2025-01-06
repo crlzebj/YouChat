@@ -1,8 +1,10 @@
 package com.zjx.youchat.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.alibaba.fastjson.JSON;
 import com.wf.captcha.ArithmeticCaptcha;
+import com.zjx.youchat.constant.ExceptionConstant;
 import com.zjx.youchat.constant.RobotConstant;
 import com.zjx.youchat.constant.UserConstant;
 import com.zjx.youchat.exception.BusinessException;
@@ -10,17 +12,20 @@ import com.zjx.youchat.mapper.ContactMapper;
 import com.zjx.youchat.mapper.MessageMapper;
 import com.zjx.youchat.mapper.SessionMapper;
 import com.zjx.youchat.mapper.UserMapper;
+import com.zjx.youchat.pojo.dto.UserInfoDTO;
 import com.zjx.youchat.pojo.dto.UserLoginDTO;
 import com.zjx.youchat.pojo.dto.UserRegisterDTO;
-import com.zjx.youchat.pojo.dto.UserInfoDTO;
-import com.zjx.youchat.pojo.po.*;
+import com.zjx.youchat.pojo.po.Contact;
+import com.zjx.youchat.pojo.po.Message;
+import com.zjx.youchat.pojo.po.Session;
+import com.zjx.youchat.pojo.po.User;
 import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.pojo.vo.PageVO;
-
-import com.zjx.youchat.service.*;
-import com.zjx.youchat.util.ContactUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.zjx.youchat.pojo.vo.UserQueryVO;
+import com.zjx.youchat.pojo.vo.UserViewVO;
+import com.zjx.youchat.service.UserService;
+import com.zjx.youchat.util.RedisUtil;
+import com.zjx.youchat.util.ThreadLocalUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,15 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
-
-	@Autowired
-	private StringRedisTemplate redisTemplate;
 
 	@Autowired
 	private ContactMapper contactMapper;
@@ -47,6 +50,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private MessageMapper messageMapper;
+
+	@Autowired
+	private StringRedisTemplate redisTemplate;
+
+	@Autowired
+	private RedisUtil redisUtil;
 
 	@Override
 	public void insert(User user) {
@@ -95,7 +104,6 @@ public class UserServiceImpl implements UserService {
 		return pageVO;
 	}
 
-
 	@Override
 	public void updateById(String id, User user) {
 		userMapper.updateById(id, user);
@@ -128,18 +136,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public CaptchaVO getCaptcha() {
+		String id = UUID.randomUUID().toString();
 		ArithmeticCaptcha captcha = new ArithmeticCaptcha(100, 42);
-		String uuid = UUID.randomUUID().toString();
 
 		// 在redis中存入随机的验证码key以及验证码的正确结果
-		redisTemplate.opsForValue().set(UserConstant.CAPTCHA_PREFIX + uuid,
+		redisTemplate.opsForValue().set(UserConstant.CAPTCHA_KEY_PREFIX + id,
 				captcha.text(), Duration.ofMinutes(1));
 
 		// 将随机的验证码key以及验证码图片的base64编码返回
 		CaptchaVO captchaVO = new CaptchaVO();
-		captchaVO.setUuid(UserConstant.CAPTCHA_PREFIX + uuid);
-		captchaVO.setCaptcha(captcha.toBase64());
-
+		captchaVO.setCaptchaKey(UserConstant.CAPTCHA_KEY_PREFIX + id);
+		captchaVO.setCaptchaValue(captcha.toBase64());
 		return captchaVO;
 	}
 
@@ -147,37 +154,37 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void register(UserRegisterDTO userRegisterDTO) {
 		// 校验验证码
-		if (userRegisterDTO.getCaptchaKey() == null) {
-			throw new BusinessException("请输入验证码");
+		if (userRegisterDTO.getCaptchaKey() == null || userRegisterDTO.getCaptchaValue() == null) {
+			throw new BusinessException(ExceptionConstant.CAPTCHA_FAILED);
 		}
-		if(!userRegisterDTO.getCaptchaValue().equals(
-				redisTemplate.opsForValue().get(userRegisterDTO.getCaptchaKey()))) {
+		if(!userRegisterDTO.getCaptchaValue()
+				.equals(redisTemplate.opsForValue().get(userRegisterDTO.getCaptchaKey()))) {
 			redisTemplate.delete(userRegisterDTO.getCaptchaKey());
-			throw new BusinessException("验证码不正确");
+			throw new BusinessException(ExceptionConstant.CAPTCHA_FAILED);
 		}
 		redisTemplate.delete(userRegisterDTO.getCaptchaKey());
 
 		// 校验邮箱是否可用
 		if (selectByEmail(userRegisterDTO.getEmail()) != null) {
-			throw new BusinessException("邮箱已使用");
+			throw new BusinessException(ExceptionConstant.EMAIL_ALREADY_USED);
 		}
 
 		// 为新用户分配id
-		String id = "U" + RandomStringUtils.random(7, false, true);
-		while (selectById(id) != null) {
-			id = "U" + RandomStringUtils.random(7, false, true);
+		String userId = RandomStringUtils.random(8, false, true);
+		while (selectById(userId) != null) {
+			userId = RandomStringUtils.random(8, false, true);
 		}
 
 		// 数据库中插入新用户记录
 		User user = new User();
-		user.setId(id);
+		user.setId(userId);
 		user.setEmail(userRegisterDTO.getEmail());
 		// 对用户密码进行SHA256加密
 		String password = DigestUtil.sha256Hex(userRegisterDTO.getPassword().getBytes());
 		user.setPassword(password);
-		user.setStatus(1);
-		user.setPermission(1);
 		user.setNickname(userRegisterDTO.getNickname());
+		user.setStatus(1);
+		user.setAuthority(1);
 		user.setCreateTime(LocalDateTime.now());
 		user.setLastLoginTime(LocalDateTime.now());
 		user.setLastLogoutTime(LocalDateTime.now());
@@ -190,35 +197,32 @@ public class UserServiceImpl implements UserService {
 		 */
 		Contact contact = new Contact();
 		contact.setInitiatorId(RobotConstant.ROBOT_ID);
-		contact.setInitiatorNickname(RobotConstant.ROBOT_NICKNAME);
-		contact.setAccepterId(id);
-		contact.setAccepterNickname(user.getNickname());
-		contact.setType(0);
+		contact.setAccepterId(userId);
 		contact.setStatus(0);
+		contact.setContactType(0);
 		contact.setCreateTime(LocalDateTime.now());
 		contact.setLastUpdateTime(LocalDateTime.now());
 		contactMapper.insert(contact);
 
 		Session session = new Session();
-		session.setInitiatorId(RobotConstant.ROBOT_ID);
-		session.setInitiatorNickname(RobotConstant.ROBOT_NICKNAME);
-		session.setAccepterId(id);
-		session.setAccepterNickname(user.getNickname());
-		String sessionId = RobotConstant.ROBOT_ID + id;
+		String sessionId = RobotConstant.ROBOT_ID + userId;
 		session.setId(DigestUtil.md5Hex(sessionId.getBytes()));
+		session.setInitiatorId(RobotConstant.ROBOT_ID);
+		session.setAccepterId(userId);
 		session.setLastMessage(RobotConstant.HELLO_MESSAGE);
-		session.setLastReceiveTime(LocalDateTime.now());
+		session.setLastSendTime(LocalDateTime.now());
 		sessionMapper.insert(session);
 
 		Message message = new Message();
-		message.setSessionId(DigestUtil.md5Hex(sessionId.getBytes()));
+		Long messageId = redisUtil.generateId(UserConstant.MESSAGE_ID_PREFIX);
+		message.setId(messageId);
+		message.setSessionId(session.getId());
 		message.setSenderId(RobotConstant.ROBOT_ID);
-		message.setSenderNickName(RobotConstant.ROBOT_NICKNAME);
-		message.setReceiverId(id);
-		message.setType(0);
-		message.setContent(RobotConstant.HELLO_MESSAGE);
+		message.setReceiverId(userId);
 		message.setSendTime(LocalDateTime.now());
-		message.setContactType(0);
+		message.setContent(RobotConstant.HELLO_MESSAGE);
+		message.setReceiverType(0);
+		message.setType(0);
 		message.setStatus(1);
 		messageMapper.insert(message);
 	}
@@ -226,13 +230,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String login(UserLoginDTO userLoginDTO) {
 		// 校验验证码
-		if (userLoginDTO.getCaptchaKey() == null) {
-			throw new BusinessException("请输入验证码");
+		if (userLoginDTO.getCaptchaKey() == null || userLoginDTO.getCaptchaValue() == null) {
+			throw new BusinessException(ExceptionConstant.CAPTCHA_FAILED);
 		}
-		if(!userLoginDTO.getCaptchaValue().equals(
-				redisTemplate.opsForValue().get(userLoginDTO.getCaptchaKey()))) {
+		if(!userLoginDTO.getCaptchaValue()
+				.equals(redisTemplate.opsForValue().get(userLoginDTO.getCaptchaKey()))) {
 			redisTemplate.delete(userLoginDTO.getCaptchaKey());
-			throw new BusinessException("验证码不正确");
+			throw new BusinessException(ExceptionConstant.CAPTCHA_FAILED);
 		}
 		redisTemplate.delete(userLoginDTO.getCaptchaKey());
 
@@ -241,43 +245,40 @@ public class UserServiceImpl implements UserService {
 		// 将传入的密码进行SHA256加密
 		String password = DigestUtil.sha256Hex(userLoginDTO.getPassword().getBytes());
 		if (user == null || !password.equals(user.getPassword())) {
-			throw new BusinessException("错误的用户名或密码");
+			throw new BusinessException(ExceptionConstant.ID_OR_PASSWORD_INCORRECT);
 		}
 
 		// 判断用户是否被封禁
 		if (user.getStatus() == 0) {
-			throw new BusinessException("账号已被封禁");
+			throw new BusinessException(ExceptionConstant.USER_BANNED);
 		}
 
-		// 判断用户是否已登录
-
-
-		// 查询用户好友列表、群组列表、会话列表、离线期间收到的消息和好友申请，放在redis中
-		List<Contact> contacts = contactMapper.selectByInitiatorIdOrAccepterId(
-				user.getId(), user.getId());
-		List<List<Contact>> list = ContactUtil.splitContact(user.getId(), contacts);
-		List<Contact> userContacts = list.get(0);
-		List<Contact> chatGroupContacts = list.get(1);
-		List<Session> sessions = sessionMapper.selectByInitiatorIdOrAccepterId(user.getId(), user.getId());
-		List<Message> messages = messageMapper.selectByReceiverId(user.getId());
-		UserInfoDTO userInfoDTO = new UserInfoDTO();
-		userInfoDTO.setUserContacts(userContacts);
-		userInfoDTO.setChatGroupContacts(chatGroupContacts);
-		userInfoDTO.setSessions(sessions);
-		userInfoDTO.setMessages(messages);
-		redisTemplate.opsForValue().set(UserConstant.USER_INITIAL_INFO_PREFIX + user.getId(),
-				JSON.toJSONString(userInfoDTO), Duration.ofMinutes(5));
-
-        // 生成JWT
-		Map<String, Object> payload = new HashMap<>();
-		payload.put("id", user.getId());
-		payload.put("email", user.getEmail());
-		payload.put("nickname", user.getNickname());
-		String jwt = Jwts.builder().setClaims(payload)
-				.signWith(SignatureAlgorithm.HS256, UserConstant.SECRET_KEY)
-				.setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
-				.compact();
+		// TODO判断用户是否已登录
 		user.setLastLoginTime(LocalDateTime.now());
-		return jwt;
+
+		// 生成token
+		Long timestamp = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+		String token = timestamp + UUID.randomUUID().toString();
+
+		// 将token以及用户信息保存到redis中
+		UserInfoDTO userInfoDTO = new UserInfoDTO();
+		userInfoDTO.setId(user.getId());
+		userInfoDTO.setEmail(user.getEmail());
+		// TODO修改token过期时间
+		redisTemplate.opsForValue().set(UserConstant.TOKEN_PREFIX + user.getId(), token);
+		redisTemplate.opsForValue().set(token, JSON.toJSONString(userInfoDTO));
+
+		// 给用户返回token
+		return token;
+	}
+
+	@Override
+	public void logout() {
+		String token = redisTemplate.opsForValue().get(UserConstant.TOKEN_PREFIX + ThreadLocalUtil.getUserId());
+		redisTemplate.delete(UserConstant.TOKEN_PREFIX + ThreadLocalUtil.getUserId());
+		if (token == null) {
+			return;
+		}
+		redisTemplate.delete(token);
 	}
 }

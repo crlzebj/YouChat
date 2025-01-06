@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zjx.youchat.mapper.UserMapper">
 	<insert id="insert">
-		insert into user values
-			(#{id},#{email},#{password},#{status},#{permission},#{nickname},#{sex},#{personalSignature},#{area},#{createTime},#{lastLoginTime},#{lastLogoutTime});
+		insert into `user` values
+		(#{id},#{email},#{password},#{nickname},#{sex},#{area},#{personalSignature},#{status},#{authority},#{createTime},#{lastLoginTime},#{lastLogoutTime});
 	</insert>
 
 	<select id="select" resultType="User">
-		select * from user
+		select * from `user`
 		<where>
 			<if test="id!=null">
 				and id=#{id}
@@ -19,23 +19,23 @@
 			<if test="password!=null">
 				and password=#{password}
 			</if>
-			<if test="status!=null">
-				and status=#{status}
-			</if>
-			<if test="permission!=null">
-				and permission=#{permission}
-			</if>
 			<if test="nickname!=null">
 				and nickname=#{nickname}
 			</if>
 			<if test="sex!=null">
 				and sex=#{sex}
 			</if>
+			<if test="area!=null">
+				and area=#{area}
+			</if>
 			<if test="personalSignature!=null">
 				and personal_signature=#{personalSignature}
 			</if>
-			<if test="area!=null">
-				and area=#{area}
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="authority!=null">
+				and authority=#{authority}
 			</if>
 			<if test="createTime!=null">
 				and create_time=#{createTime}
@@ -50,7 +50,7 @@
 	</select>
 
 	<select id="count" resultType="Integer">
-		select count(*) from user
+		select count(*) from `user`
 		<where>
 			<if test="id!=null">
 				and id=#{id}
@@ -61,23 +61,23 @@
 			<if test="password!=null">
 				and password=#{password}
 			</if>
-			<if test="status!=null">
-				and status=#{status}
-			</if>
-			<if test="permission!=null">
-				and permission=#{permission}
-			</if>
 			<if test="nickname!=null">
 				and nickname=#{nickname}
 			</if>
 			<if test="sex!=null">
 				and sex=#{sex}
 			</if>
+			<if test="area!=null">
+				and area=#{area}
+			</if>
 			<if test="personalSignature!=null">
 				and personal_signature=#{personalSignature}
 			</if>
-			<if test="area!=null">
-				and area=#{area}
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="authority!=null">
+				and authority=#{authority}
 			</if>
 			<if test="createTime!=null">
 				and create_time=#{createTime}
@@ -92,7 +92,7 @@
 	</select>
 
 	<select id="selectPage" resultType="User">
-		select * from user
+		select * from `user`
 		<where>
 			<if test="user.id!=null">
 				and id=#{user.id}
@@ -103,23 +103,23 @@
 			<if test="user.password!=null">
 				and password=#{user.password}
 			</if>
-			<if test="user.status!=null">
-				and status=#{user.status}
-			</if>
-			<if test="user.permission!=null">
-				and permission=#{user.permission}
-			</if>
 			<if test="user.nickname!=null">
 				and nickname=#{user.nickname}
 			</if>
 			<if test="user.sex!=null">
 				and sex=#{user.sex}
 			</if>
+			<if test="user.area!=null">
+				and area=#{user.area}
+			</if>
 			<if test="user.personalSignature!=null">
 				and personal_signature=#{user.personalSignature}
 			</if>
-			<if test="user.area!=null">
-				and area=#{user.area}
+			<if test="user.status!=null">
+				and status=#{user.status}
+			</if>
+			<if test="user.authority!=null">
+				and authority=#{user.authority}
 			</if>
 			<if test="user.createTime!=null">
 				and create_time=#{user.createTime}
@@ -135,7 +135,7 @@
 	</select>
 
 	<update id="updateById">
-		update user
+		update `user`
 		<set>
 			<if test="user.id!=null">
 				id=#{user.id},
@@ -146,23 +146,23 @@
 			<if test="user.password!=null">
 				password=#{user.password},
 			</if>
-			<if test="user.status!=null">
-				status=#{user.status},
-			</if>
-			<if test="user.permission!=null">
-				permission=#{user.permission},
-			</if>
 			<if test="user.nickname!=null">
 				nickname=#{user.nickname},
 			</if>
 			<if test="user.sex!=null">
 				sex=#{user.sex},
 			</if>
+			<if test="user.area!=null">
+				area=#{user.area},
+			</if>
 			<if test="user.personalSignature!=null">
 				personal_signature=#{user.personalSignature},
 			</if>
-			<if test="user.area!=null">
-				area=#{user.area},
+			<if test="user.status!=null">
+				status=#{user.status},
+			</if>
+			<if test="user.authority!=null">
+				authority=#{user.authority},
 			</if>
 			<if test="user.createTime!=null">
 				create_time=#{user.createTime},
@@ -178,17 +178,17 @@
 	</update>
 
 	<delete id="deleteById">
-		delete from user
+		delete from `user`
 		where id=#{id};
 	</delete>
 
 	<select id="selectById" resultType="User">
-		select * from user
+		select * from `user`
 		where id=#{id};
 	</select>
 
 	<update id="updateByEmail">
-		update user
+		update `user`
 		<set>
 			<if test="user.id!=null">
 				id=#{user.id},
@@ -199,23 +199,23 @@
 			<if test="user.password!=null">
 				password=#{user.password},
 			</if>
-			<if test="user.status!=null">
-				status=#{user.status},
-			</if>
-			<if test="user.permission!=null">
-				permission=#{user.permission},
-			</if>
 			<if test="user.nickname!=null">
 				nickname=#{user.nickname},
 			</if>
 			<if test="user.sex!=null">
 				sex=#{user.sex},
 			</if>
+			<if test="user.area!=null">
+				area=#{user.area},
+			</if>
 			<if test="user.personalSignature!=null">
 				personal_signature=#{user.personalSignature},
 			</if>
-			<if test="user.area!=null">
-				area=#{user.area},
+			<if test="user.status!=null">
+				status=#{user.status},
+			</if>
+			<if test="user.authority!=null">
+				authority=#{user.authority},
 			</if>
 			<if test="user.createTime!=null">
 				create_time=#{user.createTime},
@@ -231,12 +231,12 @@
 	</update>
 
 	<delete id="deleteByEmail">
-		delete from user
+		delete from `user`
 		where email=#{email};
 	</delete>
 
 	<select id="selectByEmail" resultType="User">
-		select * from user
+		select * from `user`
 		where email=#{email};
 	</select>
 

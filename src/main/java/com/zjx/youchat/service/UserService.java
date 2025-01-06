@@ -5,6 +5,8 @@ import com.zjx.youchat.pojo.dto.UserRegisterDTO;
 import com.zjx.youchat.pojo.po.User;
 import com.zjx.youchat.pojo.vo.CaptchaVO;
 import com.zjx.youchat.pojo.vo.PageVO;
+import com.zjx.youchat.pojo.vo.UserQueryVO;
+import com.zjx.youchat.pojo.vo.UserViewVO;
 
 import java.util.List;
 
@@ -37,4 +39,6 @@ public interface UserService {
 	void register(UserRegisterDTO userRegisterDTO);
 
 	String login(UserLoginDTO userLoginDTO);
+
+	void logout();
 }

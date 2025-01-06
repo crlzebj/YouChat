@@ -1,4 +1,4 @@
-package com.zjx.youchat.configuration;
+package com.zjx.youchat.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

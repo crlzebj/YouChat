@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class WebsocketPackageDTO<T> implements Serializable {
+public class WebSocketPackage<T> implements Serializable {
     private Integer type;
     private String receiverId;
     private T data;

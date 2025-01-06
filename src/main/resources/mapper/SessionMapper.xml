@@ -1,174 +1,140 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zjx.youchat.mapper.SessionMapper">
 	<insert id="insert">
-		insert into session values
-			(#{initiatorId},#{initiatorNickname},#{accepterId},#{accepterNickname},#{id},#{lastMessage},#{lastReceiveTime});
+		insert into `session` values
+		(#{id},#{initiatorId},#{accepterId},#{lastMessage},#{lastSendTime});
 	</insert>
 
 	<select id="select" resultType="Session">
-		select * from session
+		select * from `session`
 		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
 			<if test="initiatorId!=null">
 				and initiator_id=#{initiatorId}
-			</if>
-			<if test="initiatorNickname!=null">
-				and initiator_nickname=#{initiatorNickname}
 			</if>
 			<if test="accepterId!=null">
 				and accepter_id=#{accepterId}
 			</if>
-			<if test="accepterNickname!=null">
-				and accepter_nickname=#{accepterNickname}
-			</if>
-			<if test="id!=null">
-				and id=#{id}
-			</if>
 			<if test="lastMessage!=null">
 				and last_message=#{lastMessage}
 			</if>
-			<if test="lastReceiveTime!=null">
-				and last_receive_time=#{lastReceiveTime}
+			<if test="lastSendTime!=null">
+				and last_send_time=#{lastSendTime}
 			</if>
 		</where>;
 	</select>
 
 	<select id="count" resultType="Integer">
-		select count(*) from session
+		select count(*) from `session`
 		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
 			<if test="initiatorId!=null">
 				and initiator_id=#{initiatorId}
-			</if>
-			<if test="initiatorNickname!=null">
-				and initiator_nickname=#{initiatorNickname}
 			</if>
 			<if test="accepterId!=null">
 				and accepter_id=#{accepterId}
 			</if>
-			<if test="accepterNickname!=null">
-				and accepter_nickname=#{accepterNickname}
-			</if>
-			<if test="id!=null">
-				and id=#{id}
-			</if>
 			<if test="lastMessage!=null">
 				and last_message=#{lastMessage}
 			</if>
-			<if test="lastReceiveTime!=null">
-				and last_receive_time=#{lastReceiveTime}
+			<if test="lastSendTime!=null">
+				and last_send_time=#{lastSendTime}
 			</if>
 		</where>;
 	</select>
 
 	<select id="selectPage" resultType="Session">
-		select * from session
+		select * from `session`
 		<where>
+			<if test="session.id!=null">
+				and id=#{session.id}
+			</if>
 			<if test="session.initiatorId!=null">
 				and initiator_id=#{session.initiatorId}
-			</if>
-			<if test="session.initiatorNickname!=null">
-				and initiator_nickname=#{session.initiatorNickname}
 			</if>
 			<if test="session.accepterId!=null">
 				and accepter_id=#{session.accepterId}
 			</if>
-			<if test="session.accepterNickname!=null">
-				and accepter_nickname=#{session.accepterNickname}
-			</if>
-			<if test="session.id!=null">
-				and id=#{session.id}
-			</if>
 			<if test="session.lastMessage!=null">
 				and last_message=#{session.lastMessage}
 			</if>
-			<if test="session.lastReceiveTime!=null">
-				and last_receive_time=#{session.lastReceiveTime}
+			<if test="session.lastSendTime!=null">
+				and last_send_time=#{session.lastSendTime}
 			</if>
 		</where>
 		limit #{offset},#{count};
 	</select>
 
 	<update id="updateByInitiatorIdAndAccepterId">
-		update session
+		update `session`
 		<set>
+			<if test="session.id!=null">
+				id=#{session.id},
+			</if>
 			<if test="session.initiatorId!=null">
 				initiator_id=#{session.initiatorId},
-			</if>
-			<if test="session.initiatorNickname!=null">
-				initiator_nickname=#{session.initiatorNickname},
 			</if>
 			<if test="session.accepterId!=null">
 				accepter_id=#{session.accepterId},
 			</if>
-			<if test="session.accepterNickname!=null">
-				accepter_nickname=#{session.accepterNickname},
-			</if>
-			<if test="session.id!=null">
-				id=#{session.id},
-			</if>
 			<if test="session.lastMessage!=null">
 				last_message=#{session.lastMessage},
 			</if>
-			<if test="session.lastReceiveTime!=null">
-				last_receive_time=#{session.lastReceiveTime},
+			<if test="session.lastSendTime!=null">
+				last_send_time=#{session.lastSendTime},
 			</if>
 		</set>
 		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</update>
 
 	<delete id="deleteByInitiatorIdAndAccepterId">
-		delete from session
+		delete from `session`
 		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</delete>
 
 	<select id="selectByInitiatorIdAndAccepterId" resultType="Session">
-		select * from session
+		select * from `session`
 		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</select>
 
 	<update id="updateById">
-		update session
+		update `session`
 		<set>
+			<if test="session.id!=null">
+				id=#{session.id},
+			</if>
 			<if test="session.initiatorId!=null">
 				initiator_id=#{session.initiatorId},
-			</if>
-			<if test="session.initiatorNickname!=null">
-				initiator_nickname=#{session.initiatorNickname},
 			</if>
 			<if test="session.accepterId!=null">
 				accepter_id=#{session.accepterId},
 			</if>
-			<if test="session.accepterNickname!=null">
-				accepter_nickname=#{session.accepterNickname},
-			</if>
-			<if test="session.id!=null">
-				id=#{session.id},
-			</if>
 			<if test="session.lastMessage!=null">
 				last_message=#{session.lastMessage},
 			</if>
-			<if test="session.lastReceiveTime!=null">
-				last_receive_time=#{session.lastReceiveTime},
+			<if test="session.lastSendTime!=null">
+				last_send_time=#{session.lastSendTime},
 			</if>
 		</set>
 		where id=#{id};
 	</update>
 
 	<delete id="deleteById">
-		delete from session
+		delete from `session`
 		where id=#{id};
 	</delete>
 
 	<select id="selectById" resultType="Session">
-		select * from session
+		select * from `session`
 		where id=#{id};
 	</select>
 
-	<select id="selectByInitiatorIdOrAccepterId" resultType="Session">
-		select * from session
-		where initiator_id=#{initiatorId} or accepter_id=#{accepterId};
-	</select>
 
 </mapper>
 

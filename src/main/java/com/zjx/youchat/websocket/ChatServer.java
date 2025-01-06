@@ -1,7 +1,6 @@
 package com.zjx.youchat.websocket;
 
-import com.zjx.youchat.configuration.ProjectConfig;
-import com.zjx.youchat.websocket.handler.HeartBeatHandler;
+import com.zjx.youchat.constant.ProjectConstant;
 import com.zjx.youchat.websocket.handler.WebSocketChatHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -11,7 +10,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -22,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatServer implements ApplicationRunner {
     @Autowired
-    private ProjectConfig projectConfig;
+    private ProjectConstant projectConstant;
 
     @Autowired
     private WebSocketChatHandler webSocketChatHandler;
@@ -33,7 +31,7 @@ public class ChatServer implements ApplicationRunner {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         String portStr = System.getProperty("websocket.port");
         int port = portStr == null || portStr.isEmpty() ?
-                projectConfig.getWebsocketPort() : Integer.parseInt(portStr);
+                projectConstant.getWebsocketPort() : Integer.parseInt(portStr);
         try {
             // 启动服务端
             ChannelFuture channelFuture = new ServerBootstrap()
@@ -44,8 +42,8 @@ public class ChatServer implements ApplicationRunner {
                         protected void initChannel(NioSocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new HttpServerCodec());
                             ch.pipeline().addLast(new HttpObjectAggregator(64 * 1024));
-                            ch.pipeline().addLast(new IdleStateHandler(60, 0, 0));
-                            ch.pipeline().addLast(new HeartBeatHandler());
+                            //ch.pipeline().addLast(new IdleStateHandler(60, 0, 0));
+                            //ch.pipeline().addLast(new HeartBeatHandler());
                             ch.pipeline().addLast(new WebSocketServerProtocolHandler("/websocket",
                                     null, true, 65536, true, true));
                             ch.pipeline().addLast(webSocketChatHandler);

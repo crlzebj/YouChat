@@ -1,4 +1,4 @@
-package com.zjx.youchat.configuration;
+package com.zjx.youchat.constant;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-public class ProjectConfig {
+public class ProjectConstant {
     @Value("${you-chat.websocket-port}")
     private Integer websocketPort;
 

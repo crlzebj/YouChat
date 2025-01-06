@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zjx.youchat.mapper.ContactMapper">
 	<insert id="insert">
-		insert into contact values
-			(#{initiatorId},#{initiatorNickname},#{accepterId},#{accepterNickname},#{type},#{status},#{createTime},#{lastUpdateTime});
+		insert into `contact` values
+		(#{initiatorId},#{accepterId},#{status},#{contactType},#{createTime},#{lastUpdateTime});
 	</insert>
 
 	<select id="select" resultType="Contact">
-		select * from contact
+		select * from `contact`
 		<where>
 			<if test="initiatorId!=null">
 				and initiator_id=#{initiatorId}
 			</if>
-			<if test="initiatorNickname!=null">
-				and initiator_nickname=#{initiatorNickname}
-			</if>
 			<if test="accepterId!=null">
 				and accepter_id=#{accepterId}
 			</if>
-			<if test="accepterNickname!=null">
-				and accepter_nickname=#{accepterNickname}
-			</if>
-			<if test="type!=null">
-				and type=#{type}
-			</if>
 			<if test="status!=null">
 				and status=#{status}
+			</if>
+			<if test="contactType!=null">
+				and contact_type=#{contactType}
 			</if>
 			<if test="createTime!=null">
 				and create_time=#{createTime}
@@ -38,25 +32,19 @@
 	</select>
 
 	<select id="count" resultType="Integer">
-		select count(*) from contact
+		select count(*) from `contact`
 		<where>
 			<if test="initiatorId!=null">
 				and initiator_id=#{initiatorId}
 			</if>
-			<if test="initiatorNickname!=null">
-				and initiator_nickname=#{initiatorNickname}
-			</if>
 			<if test="accepterId!=null">
 				and accepter_id=#{accepterId}
 			</if>
-			<if test="accepterNickname!=null">
-				and accepter_nickname=#{accepterNickname}
-			</if>
-			<if test="type!=null">
-				and type=#{type}
-			</if>
 			<if test="status!=null">
 				and status=#{status}
+			</if>
+			<if test="contactType!=null">
+				and contact_type=#{contactType}
 			</if>
 			<if test="createTime!=null">
 				and create_time=#{createTime}
@@ -68,25 +56,19 @@
 	</select>
 
 	<select id="selectPage" resultType="Contact">
-		select * from contact
+		select * from `contact`
 		<where>
 			<if test="contact.initiatorId!=null">
 				and initiator_id=#{contact.initiatorId}
 			</if>
-			<if test="contact.initiatorNickname!=null">
-				and initiator_nickname=#{contact.initiatorNickname}
-			</if>
 			<if test="contact.accepterId!=null">
 				and accepter_id=#{contact.accepterId}
 			</if>
-			<if test="contact.accepterNickname!=null">
-				and accepter_nickname=#{contact.accepterNickname}
-			</if>
-			<if test="contact.type!=null">
-				and type=#{contact.type}
-			</if>
 			<if test="contact.status!=null">
 				and status=#{contact.status}
+			</if>
+			<if test="contact.contactType!=null">
+				and contact_type=#{contact.contactType}
 			</if>
 			<if test="contact.createTime!=null">
 				and create_time=#{contact.createTime}
@@ -99,25 +81,19 @@
 	</select>
 
 	<update id="updateByInitiatorIdAndAccepterId">
-		update contact
+		update `contact`
 		<set>
 			<if test="contact.initiatorId!=null">
 				initiator_id=#{contact.initiatorId},
 			</if>
-			<if test="contact.initiatorNickname!=null">
-				initiator_nickname=#{contact.initiatorNickname},
-			</if>
 			<if test="contact.accepterId!=null">
 				accepter_id=#{contact.accepterId},
 			</if>
-			<if test="contact.accepterNickname!=null">
-				accepter_nickname=#{contact.accepterNickname},
-			</if>
-			<if test="contact.type!=null">
-				type=#{contact.type},
-			</if>
 			<if test="contact.status!=null">
 				status=#{contact.status},
+			</if>
+			<if test="contact.contactType!=null">
+				contact_type=#{contact.contactType},
 			</if>
 			<if test="contact.createTime!=null">
 				create_time=#{contact.createTime},
@@ -130,19 +106,15 @@
 	</update>
 
 	<delete id="deleteByInitiatorIdAndAccepterId">
-		delete from contact
+		delete from `contact`
 		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</delete>
 
 	<select id="selectByInitiatorIdAndAccepterId" resultType="Contact">
-		select * from contact
+		select * from `contact`
 		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
 	</select>
 
-	<select id="selectByInitiatorIdOrAccepterId" resultType="Contact">
-		select * from contact
-		where initiator_id=#{initiatorId} or accepter_id=#{accepterId};
-	</select>
 
 </mapper>
 

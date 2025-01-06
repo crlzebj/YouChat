@@ -3,7 +3,6 @@ package com.zjx.youchat.service.impl;
 import com.zjx.youchat.mapper.MessageMapper;
 import com.zjx.youchat.pojo.po.Message;
 import com.zjx.youchat.pojo.vo.PageVO;
-
 import com.zjx.youchat.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,10 +75,5 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public Message selectById(Long id) {
 		return messageMapper.selectById(id);
-	}
-
-	@Override
-	public List<Message> selectByReceiverId(String receiverId) {
-		return messageMapper.selectByReceiverId(receiverId);
 	}
 }

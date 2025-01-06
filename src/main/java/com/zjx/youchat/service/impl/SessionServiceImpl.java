@@ -3,7 +3,6 @@ package com.zjx.youchat.service.impl;
 import com.zjx.youchat.mapper.SessionMapper;
 import com.zjx.youchat.pojo.po.Session;
 import com.zjx.youchat.pojo.vo.PageVO;
-
 import com.zjx.youchat.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,10 +90,5 @@ public class SessionServiceImpl implements SessionService {
 	@Override
 	public Session selectById(String id) {
 		return sessionMapper.selectById(id);
-	}
-
-	@Override
-	public List<Session> selectByInitiatorIdOrAccepterId(String initiatorId, String accepterId) {
-		return sessionMapper.selectByInitiatorIdOrAccepterId(initiatorId, accepterId);
 	}
 }

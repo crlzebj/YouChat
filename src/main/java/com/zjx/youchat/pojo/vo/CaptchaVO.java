@@ -6,6 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class CaptchaVO implements Serializable {
-    private String uuid;
-    private String captcha;
+    private String captchaKey;
+    private String captchaValue;
 }

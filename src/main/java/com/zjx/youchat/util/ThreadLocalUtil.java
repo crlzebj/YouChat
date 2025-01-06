@@ -1,37 +1,27 @@
 package com.zjx.youchat.util;
 
 public class ThreadLocalUtil {
-    private static final ThreadLocal<String> id = new ThreadLocal<>();
-    private static final ThreadLocal<String> email = new ThreadLocal<>();
-    private static final ThreadLocal<String> nickname = new ThreadLocal<>();
+    private static final ThreadLocal<String> USER_ID = new ThreadLocal<>();
+    private static final ThreadLocal<String> EMAIL = new ThreadLocal<>();
 
-    public static void setId(String id) {
-        ThreadLocalUtil.id.set(id);
+    public static void setUserId(String userId) {
+        ThreadLocalUtil.USER_ID.set(userId);
     }
 
     public static void setEmail(String email) {
-        ThreadLocalUtil.email.set(email);
+        ThreadLocalUtil.EMAIL.set(email);
     }
 
-    public static void setNickname(String nickname) {
-        ThreadLocalUtil.nickname.set(nickname);
-    }
-
-    public static String getId() {
-        return ThreadLocalUtil.id.get();
+    public static String getUserId() {
+        return ThreadLocalUtil.USER_ID.get();
     }
 
     public static String getEmail() {
-        return ThreadLocalUtil.email.get();
-    }
-
-    public static String getNickname() {
-        return ThreadLocalUtil.nickname.get();
+        return ThreadLocalUtil.EMAIL.get();
     }
 
     public static void remove() {
-        ThreadLocalUtil.id.remove();
-        ThreadLocalUtil.email.remove();
-        ThreadLocalUtil.nickname.remove();
+        ThreadLocalUtil.USER_ID.remove();
+        ThreadLocalUtil.EMAIL.remove();
     }
 }

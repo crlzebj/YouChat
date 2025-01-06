@@ -1,8 +1,6 @@
-package com.zjx.youchat.websocket.service;
+package com.zjx.youchat.websocket;
 
-import com.zjx.youchat.constant.WebsocketPackageConstant;
-import com.zjx.youchat.pojo.dto.WebsocketPackageDTO;
-import com.zjx.youchat.pojo.po.Message;
+import com.zjx.youchat.pojo.dto.WebSocketPackage;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +20,18 @@ public class RedissonService {
     private RedissonClient redissonClient;
 
     @Autowired
-    private ChannelService channelService;
+    private ChannelManager channelManager;
 
     @PostConstruct
     public void subscribe() {
         RTopic topic = redissonClient.getTopic(TOPIC_STRING);
-        topic.addListener(WebsocketPackageDTO.class, (charSequence, websocketPackageDTO) -> {
-            channelService.sendInfo(websocketPackageDTO);
+        topic.addListener(WebSocketPackage.class, (charSequence, webSocketPackage) -> {
+            channelManager.sendWebSocketPackageDTO(webSocketPackage);
         });
     }
 
-    public void publish(WebsocketPackageDTO websocketPackageDTO) {
+    public void publish(WebSocketPackage websocketPackage) {
         RTopic topic = redissonClient.getTopic(TOPIC_STRING);
-        topic.publish(websocketPackageDTO);
+        topic.publish(websocketPackage);
     }
 }

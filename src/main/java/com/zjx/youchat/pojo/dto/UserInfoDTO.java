@@ -1,16 +1,11 @@
 package com.zjx.youchat.pojo.dto;
 
-import com.zjx.youchat.pojo.po.Contact;
-import com.zjx.youchat.pojo.po.Message;
-import com.zjx.youchat.pojo.po.Session;
 import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
 @Data
-public class UserInfoDTO {
-    public List<Contact> userContacts;
-    public List<Contact> chatGroupContacts;
-    public List<Session> sessions;
-    public List<Message> messages;
+public class UserInfoDTO implements Serializable {
+    private String id;
+    private String email;
 }
