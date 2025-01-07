@@ -1,6 +1,7 @@
 package com.zjx.youchat.websocket;
 
 import com.alibaba.fastjson.JSON;
+import com.zjx.youchat.constant.ExceptionConstant;
 import com.zjx.youchat.constant.enums.WebSocketPackageEnum;
 import com.zjx.youchat.mapper.ContactMapper;
 import com.zjx.youchat.pojo.dto.WebSocketPackage;
@@ -11,6 +12,7 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ import java.util.concurrent.*;
 /**
  * Channel管理器
  */
+@Slf4j
 @Component
 public class ChannelManager {
     // 存放userId和Channel的对应关系
@@ -89,16 +92,24 @@ public class ChannelManager {
 
     /**
      * 发送WebSocketPackageDTO
-     * @param websocketPackage
+     * @param webSocketPackage
      */
-    public void sendWebSocketPackageDTO(WebSocketPackage websocketPackage) {
-        String receiverId = websocketPackage.getReceiverId();
+    public void sendWebSocketPackageDTO(WebSocketPackage webSocketPackage) {
+        String receiverId = webSocketPackage.getReceiverId();
         if (!userIdToChannel.containsKey(receiverId)) {
             return;
         }
+
+        switch (WebSocketPackageEnum.getInstanceByValue(webSocketPackage.getType())) {
+            case MESSAGE:
+                break;
+            default:
+                log.info("WebSocket服务器异常：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
+        }
+
         userIdToChannel.get(receiverId)
-                .writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(websocketPackage)));
-        if (WebSocketPackageEnum.getInstanceByValue(websocketPackage.getType())
+                .writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(webSocketPackage)));
+        if (WebSocketPackageEnum.getInstanceByValue(webSocketPackage.getType())
                 == WebSocketPackageEnum.ACCOUNT_BANNED) {
             userIdToChannel.get(receiverId).close();
             userIdToChannel.remove(receiverId);

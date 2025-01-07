@@ -2,7 +2,6 @@ package com.zjx.youchat.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.zjx.youchat.constant.ExceptionConstant;
-import com.zjx.youchat.exception.BusinessException;
 import com.zjx.youchat.pojo.dto.UserInfoDTO;
 import com.zjx.youchat.pojo.dto.WebSocketPackage;
 import io.netty.channel.Channel;
@@ -94,12 +93,13 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
         Attribute<String> attribute = channelHandlerContext.channel()
                 .attr(AttributeKey.valueOf("userId"));
         String userId = attribute.get();
+
         log.info("{}: {}", userId, textWebSocketFrame.text());
 
         try {
-            WebSocketPackage websocketPackage = JSON.parseObject(textWebSocketFrame.text(),
+            WebSocketPackage webSocketPackage = JSON.parseObject(textWebSocketFrame.text(),
                     WebSocketPackage.class);
-            redissonService.publish(websocketPackage);
+            redissonService.publish(webSocketPackage);
         } catch (Exception e) {
             log.info("WebSocket服务器异常：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
         }
