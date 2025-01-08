@@ -1,18 +1,27 @@
 package com.zjx.youchat.service.impl;
 
+import cn.hutool.crypto.digest.DigestUtil;
+import com.alibaba.fastjson.JSON;
+import com.zjx.youchat.constant.UserConstant;
 import com.zjx.youchat.mapper.MessageMapper;
 import com.zjx.youchat.pojo.po.Message;
 import com.zjx.youchat.pojo.vo.PageVO;
 import com.zjx.youchat.service.MessageService;
+import com.zjx.youchat.util.RedisUtil;
+import com.zjx.youchat.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
 	@Autowired
 	private MessageMapper messageMapper;
+
+	@Autowired
+	private RedisUtil redisUtil;
 
 	@Override
 	public void insert(Message message) {
@@ -75,5 +84,22 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public Message selectById(Long id) {
 		return messageMapper.selectById(id);
+	}
+
+	@Override
+	public void send(Message message) {
+		Long messageId = redisUtil.generateId(UserConstant.MESSAGE_ID_PREFIX);
+		message.setId(messageId);
+		String sessionId = null;
+		if (message.getReceiverType() == 0) {
+			sessionId = message.getSenderId().compareTo(message.getReceiverId()) > 0 ?
+					DigestUtil.md5Hex((message.getSenderId() + message.getReceiverId()).getBytes()) :
+					DigestUtil.md5Hex((message.getReceiverId() + message.getSenderId()).getBytes());
+		} else if (message.getReceiverType() == 1) {
+			sessionId = DigestUtil.md5Hex(message.getReceiverId().getBytes());
+		}
+		message.setSessionId(sessionId);
+		message.setSendTime(LocalDateTime.now());
+		messageMapper.insert(message);
 	}
 }

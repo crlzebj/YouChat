@@ -6,7 +6,10 @@ import com.zjx.youchat.constant.enums.WebSocketPackageEnum;
 import com.zjx.youchat.mapper.ContactMapper;
 import com.zjx.youchat.pojo.dto.WebSocketPackage;
 import com.zjx.youchat.pojo.po.GroupContact;
+import com.zjx.youchat.pojo.po.Message;
 import com.zjx.youchat.pojo.po.UserContact;
+import com.zjx.youchat.service.MessageService;
+import com.zjx.youchat.util.RedisUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -32,7 +35,13 @@ public class ChannelManager {
     private final ConcurrentHashMap<String, ChannelGroup> groupIdToChannelGroup;
 
     @Autowired
+    private MessageService messageService;
+
+    @Autowired
     private ContactMapper contactMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     public ChannelManager() {
         userIdToChannel = new ConcurrentHashMap<>();
@@ -95,18 +104,20 @@ public class ChannelManager {
      * @param webSocketPackage
      */
     public void sendWebSocketPackageDTO(WebSocketPackage webSocketPackage) {
-        String receiverId = webSocketPackage.getReceiverId();
-        if (!userIdToChannel.containsKey(receiverId)) {
-            return;
-        }
-
+        //数据库逻辑
         switch (WebSocketPackageEnum.getInstanceByValue(webSocketPackage.getType())) {
             case MESSAGE:
+                Message message = JSON.parseObject(JSON.toJSONString(webSocketPackage.getData()), Message.class);
+                messageService.send(message);
                 break;
             default:
                 log.info("WebSocket服务器异常：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
         }
 
+        String receiverId = webSocketPackage.getReceiverId();
+        if (!userIdToChannel.containsKey(receiverId)) {
+            return;
+        }
         userIdToChannel.get(receiverId)
                 .writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(webSocketPackage)));
         if (WebSocketPackageEnum.getInstanceByValue(webSocketPackage.getType())

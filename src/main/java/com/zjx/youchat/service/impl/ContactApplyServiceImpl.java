@@ -5,6 +5,7 @@ import com.zjx.youchat.constant.ExceptionConstant;
 import com.zjx.youchat.constant.UserConstant;
 import com.zjx.youchat.exception.BusinessException;
 import com.zjx.youchat.mapper.ContactApplyMapper;
+import com.zjx.youchat.mapper.ContactMapper;
 import com.zjx.youchat.mapper.GroupMapper;
 import com.zjx.youchat.mapper.UserMapper;
 import com.zjx.youchat.pojo.dto.ContactApplyAddDTO;
@@ -34,6 +35,9 @@ public class ContactApplyServiceImpl implements ContactApplyService {
 
 	@Autowired
 	private GroupMapper groupMapper;
+
+	@Autowired
+	private ContactMapper contactMapper;
 
 	@Autowired
 	private RedisUtil redisUtil;
@@ -145,7 +149,12 @@ public class ContactApplyServiceImpl implements ContactApplyService {
 			throw new BusinessException(ExceptionConstant.ILLEGAL_REQUEST);
 		}
 
-		// TODO判断是否已经是联系人
+		if (contactMapper.selectByInitiatorIdAndAccepterId(ThreadLocalUtil.getUserId(),
+				contactApplyAddDTO.getContactId()) != null ||
+				contactMapper.selectByInitiatorIdAndAccepterId(contactApplyAddDTO.getContactId(),
+						ThreadLocalUtil.getUserId()) != null) {
+			throw new BusinessException(ExceptionConstant.ALREADY_BE_CONTACTS);
+		}
 
 		// 判断用户或群组的权限
 		if (authority == 0) {

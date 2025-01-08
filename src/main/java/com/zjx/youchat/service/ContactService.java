@@ -1,6 +1,7 @@
 package com.zjx.youchat.service;
 
 import com.zjx.youchat.pojo.po.Contact;
+import com.zjx.youchat.pojo.po.ContactApply;
 import com.zjx.youchat.pojo.po.Group;
 import com.zjx.youchat.pojo.vo.PageVO;
 import com.zjx.youchat.pojo.vo.UserViewVO;
@@ -28,4 +29,6 @@ public interface ContactService {
 	UserViewVO viewUser(String userId);
 
 	Group viewGroup(String groupId);
+
+	void accept(Long contactId);
 }

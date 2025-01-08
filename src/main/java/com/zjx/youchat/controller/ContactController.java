@@ -22,4 +22,10 @@ public class ContactController {
 	public ResponseVO<Group> viewGroup(@RequestParam String groupId) {
 		return ResponseVO.success(contactService.viewGroup(groupId));
 	}
+
+	@GetMapping("/accept")
+	public ResponseVO accept(@RequestParam Long contactId) {
+		contactService.accept(contactId);
+		return ResponseVO.success();
+	}
 }
