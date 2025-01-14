@@ -265,8 +265,8 @@ public class UserServiceImpl implements UserService {
 		userInfoDTO.setId(user.getId());
 		userInfoDTO.setEmail(user.getEmail());
 		// TODO修改token过期时间
-		redisTemplate.opsForValue().set(UserConstant.TOKEN_PREFIX + user.getId(), token);
-		redisTemplate.opsForValue().set(token, JSON.toJSONString(userInfoDTO));
+		redisTemplate.opsForValue().set(UserConstant.USER_TOKEN.formatted(user.getId()), token);
+		redisTemplate.opsForValue().set(UserConstant.TOKEN_PREFIX + token, JSON.toJSONString(userInfoDTO));
 
 		// 给用户返回token
 		return token;

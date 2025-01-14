@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background: url('https://cdn.pixabay.com/photo/2018/08/14/13/23/ocean-3605547_1280.jpg') no-repeat;
+            background-size: 100% 130%;
+        }
+
+        #login_box {
+            width: 20%;
+            height: 500px; /* 增加高度以容纳验证码图片 */
+            background-color: #00000060;
+            margin: auto;
+            margin-top: 10%;
+            text-align: center;
+            border-radius: 10px;
+            padding: 50px 50px;
+        }
+
+        h2 {
+            color: #ffffff90;
+            margin-top: 5%;
+        }
+
+        #input-box {
+            margin-top: 5%;
+        }
+
+        span {
+            color: #fff;
+        }
+
+        input {
+            border: 0;
+            width: 60%;
+            font-size: 15px;
+            color: #fff;
+            background: transparent;
+            border-bottom: 2px solid #fff;
+            padding: 5px 10px;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        button {
+            margin-top: 50px;
+            width: 60%;
+            height: 30px;
+            border-radius: 10px;
+            border: 0;
+            color: #fff;
+            text-align: center;
+            line-height: 30px;
+            font-size: 15px;
+            background-image: linear-gradient(to right, #30cfd0, #330867);
+            cursor: pointer;
+        }
+
+        #sign_up {
+            margin-top: 45%;
+            margin-left: 60%;
+        }
+
+        a {
+            color: #b94648;
+        }
+
+        /* 新增的样式，用于显示验证码图片 */
+        #captcha_image {
+            width: 60%;
+            margin-top: 10px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="login_box">
+    <h2>LOGIN</h2>
+
+    <!-- 输入邮箱 -->
+    <div id="input_box">
+        <input type="text" placeholder="请输入邮箱" id="email">
+    </div>
+
+    <!-- 输入密码 -->
+    <div class="input_box">
+        <input type="password" placeholder="请输入密码" id="password">
+    </div>
+
+    <!-- 获取验证码按钮/图片 -->
+    <div class="input_box">
+        <button id="get_captcha" onclick="getCaptcha()">获取验证码</button>
+        <!-- 显示验证码图片的位置 -->
+        <img id="captcha_image" src="" alt="验证码" style="display:none;">
+    </div>
+
+    <!-- 输入验证码 -->
+    <div class="input_box">
+        <input type="text" placeholder="请输入验证码" id="captcha">
+    </div>
+
+    <!-- 登录按钮 -->
+    <button onclick="login()">登录</button>
+</div>
+
+<script>
+    // 定义一个变量来保存验证码的 key
+    let captchaKey = '';
+    let token = ''; // 用来保存登录返回的 token
+
+    // 获取验证码的函数
+    function getCaptcha() {
+        fetch('http://localhost:8080/user/captcha', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json()) // 假设返回的是 JSON 格式
+            .then(data => {
+                if (data.code === 1 && data.data.captchaValue) {
+                    // 获取到的 Base64 图片数据
+                    let captchaImage = data.data.captchaValue; // 获取 captchaValue 字段
+                    captchaKey = data.data.captchaKey; // 保存 captchaKey
+
+                    // 将获取到的图片显示出来
+                    const imgElement = document.getElementById("captcha_image");
+                    imgElement.src = captchaImage;  // 将 Base64 图片直接设置为 src
+                    imgElement.style.display = "block";  // 显示图片
+
+                    // 隐藏获取验证码按钮
+                    document.getElementById("get_captcha").style.display = "none";
+                } else {
+                    alert("获取验证码失败，请稍后再试。");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching captcha:', error);
+                alert("获取验证码失败，请稍后再试。");
+            });
+    }
+
+    // 登录函数
+    function login() {
+        // 获取输入的邮箱、密码和验证码
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var captcha = document.getElementById("captcha").value;
+
+        // 确保邮箱、密码和验证码都已填写
+        if (!email || !password || !captcha || !captchaKey) {
+            alert("请填写所有字段！");
+            return;
+        }
+
+        // 构造请求的 JSON 数据
+        var requestData = {
+            email: email,
+            password: password,
+            captchaKey: captchaKey,  // 使用保存的 captchaKey
+            captchaValue: captcha   // 用户输入的验证码
+        };
+
+        // 发送 POST 请求进行登录
+        fetch('http://localhost:8080/user/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1) {
+                    // 保存 token
+                    token = data.data.token;
+                    alert("登录成功！");
+
+                    // 登录成功后，跳转到聊天页面并传递 token
+                    window.location.href = `./index.html?token=${token}`;
+                } else {
+                    alert("登录失败：" + (data.msg || "未知错误"));
+                }
+            })
+            .catch(error => {
+                console.error('Error during login:', error);
+                alert("登录失败，请稍后再试。");
+            });
+    }
+</script>
+</body>
+
+</html>

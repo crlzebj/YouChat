@@ -27,7 +27,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (token == null) {
             throw new BusinessException(ExceptionConstant.TOKEN_FAILED);
         }
-        String userInfoStr = redisTemplate.opsForValue().get(token);
+        String userInfoStr = redisTemplate.opsForValue().get(UserConstant.TOKEN_PREFIX + token);
         if (userInfoStr == null) {
             throw new BusinessException(ExceptionConstant.TOKEN_FAILED);
         }

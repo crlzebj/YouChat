@@ -11,4 +11,5 @@ public class ExceptionConstant {
     public static final String ILLEGAL_REQUEST = "非法请求";
     public static final String WEBSOCKET_PACKAGE_FORMAT_ERROR = "WebSocket包格式错误";
     public static final String ALREADY_BE_CONTACTS = "已经成为好友或者已经加入群组";
+    public static final String ILLEGAL_REQUEST1 = "非法请求，请求用户id：%s";
 }

@@ -105,13 +105,25 @@ public class ChannelManager {
      */
     public void sendWebSocketPackageDTO(WebSocketPackage webSocketPackage) {
         //数据库逻辑
+        // TODO消息队列异步修改数据库
         switch (WebSocketPackageEnum.getInstanceByValue(webSocketPackage.getType())) {
+            case LOGIN_INIT:
+                break;
             case MESSAGE:
                 Message message = JSON.parseObject(JSON.toJSONString(webSocketPackage.getData()), Message.class);
                 messageService.send(message);
                 break;
+            case REQUEST:
+                break;
+            case REQUEST_DONE:
+                break;
+            case ACCOUNT_BANNED:
+                break;
+            case GROUP_BANNED:
+                break;
             default:
-                log.info("WebSocket服务器异常：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
+                log.info("异常信息：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
+                return;
         }
 
         String receiverId = webSocketPackage.getReceiverId();

@@ -17,11 +17,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor(redisTemplate))
                 .excludePathPatterns("/user/captcha", "/user/register", "/user/login")
-                .excludePathPatterns("/static/**");
+                .excludePathPatterns("/static/**").excludePathPatterns("/favicon.ico");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/favicon.ico");
     }
 }

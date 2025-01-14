@@ -2,8 +2,11 @@ package com.zjx.youchat.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.zjx.youchat.constant.ExceptionConstant;
+import com.zjx.youchat.constant.UserConstant;
+import com.zjx.youchat.constant.enums.WebSocketPackageEnum;
 import com.zjx.youchat.pojo.dto.UserInfoDTO;
 import com.zjx.youchat.pojo.dto.WebSocketPackage;
+import com.zjx.youchat.pojo.po.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -42,7 +45,7 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
             if (key.compareTo("token") != 0) {
                 continue;
             }
-            String userInfoStr = redisTemplate.opsForValue().get(value);
+            String userInfoStr = redisTemplate.opsForValue().get(UserConstant.TOKEN_PREFIX + value);
             if (userInfoStr == null) {
                 return null;
             }
@@ -90,18 +93,45 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext,
                                 TextWebSocketFrame textWebSocketFrame) throws Exception {
+        // 获取发送WebSocket包的用户id
         Attribute<String> attribute = channelHandlerContext.channel()
                 .attr(AttributeKey.valueOf("userId"));
         String userId = attribute.get();
 
-        log.info("{}: {}", userId, textWebSocketFrame.text());
+        // 记录日志
+        log.info("WebSocket服务器收到WebSocket包 {}: {}", userId, textWebSocketFrame.text());
 
+        WebSocketPackage webSocketPackage = null;
         try {
-            WebSocketPackage webSocketPackage = JSON.parseObject(textWebSocketFrame.text(),
-                    WebSocketPackage.class);
-            redissonService.publish(webSocketPackage);
+            webSocketPackage = JSON.parseObject(textWebSocketFrame.text(), WebSocketPackage.class);
+            // 校验WebSocket包
+            switch (WebSocketPackageEnum.getInstanceByValue(webSocketPackage.getType())) {
+                case LOGIN_INIT:
+                    break;
+                case MESSAGE:
+                    Message message = JSON.parseObject(JSON.toJSONString(webSocketPackage.getData()), Message.class);
+                    if (userId.compareTo(message.getSenderId()) != 0) {
+                        log.info(ExceptionConstant.ILLEGAL_REQUEST1.formatted(userId));
+                    }
+                    break;
+                case REQUEST:
+                    break;
+                case REQUEST_DONE:
+                    break;
+                case ACCOUNT_BANNED:
+                    break;
+                case GROUP_BANNED:
+                    break;
+                default:
+                    log.info(ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
+                    return;
+            }
         } catch (Exception e) {
-            log.info("WebSocket服务器异常：{}", ExceptionConstant.WEBSOCKET_PACKAGE_FORMAT_ERROR);
+            log.info("WebSocket包解析异常：{}", e.getMessage());
+            return;
         }
+
+        // 发布WebSocket包
+        redissonService.publish(webSocketPackage);
     }
 }
