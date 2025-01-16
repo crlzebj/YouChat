@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.chat.mapper.ContactMapper">
+	<insert id="insert">
+		insert into `contact` values
+		(#{initiatorId},#{accepterId},#{status},#{contactType},#{createTime},#{lastUpdateTime});
+	</insert>
+
+	<select id="select" resultType="Contact">
+		select * from `contact`
+		<where>
+			<if test="initiatorId!=null">
+				and initiator_id=#{initiatorId}
+			</if>
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="contactType!=null">
+				and contact_type=#{contactType}
+			</if>
+			<if test="createTime!=null">
+				and create_time=#{createTime}
+			</if>
+			<if test="lastUpdateTime!=null">
+				and last_update_time=#{lastUpdateTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(*) from `contact`
+		<where>
+			<if test="initiatorId!=null">
+				and initiator_id=#{initiatorId}
+			</if>
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="contactType!=null">
+				and contact_type=#{contactType}
+			</if>
+			<if test="createTime!=null">
+				and create_time=#{createTime}
+			</if>
+			<if test="lastUpdateTime!=null">
+				and last_update_time=#{lastUpdateTime}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="Contact">
+		select * from `contact`
+		<where>
+			<if test="contact.initiatorId!=null">
+				and initiator_id=#{contact.initiatorId}
+			</if>
+			<if test="contact.accepterId!=null">
+				and accepter_id=#{contact.accepterId}
+			</if>
+			<if test="contact.status!=null">
+				and status=#{contact.status}
+			</if>
+			<if test="contact.contactType!=null">
+				and contact_type=#{contact.contactType}
+			</if>
+			<if test="contact.createTime!=null">
+				and create_time=#{contact.createTime}
+			</if>
+			<if test="contact.lastUpdateTime!=null">
+				and last_update_time=#{contact.lastUpdateTime}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateByInitiatorIdAndAccepterId">
+		update `contact`
+		<set>
+			<if test="contact.initiatorId!=null">
+				initiator_id=#{contact.initiatorId},
+			</if>
+			<if test="contact.accepterId!=null">
+				accepter_id=#{contact.accepterId},
+			</if>
+			<if test="contact.status!=null">
+				status=#{contact.status},
+			</if>
+			<if test="contact.contactType!=null">
+				contact_type=#{contact.contactType},
+			</if>
+			<if test="contact.createTime!=null">
+				create_time=#{contact.createTime},
+			</if>
+			<if test="contact.lastUpdateTime!=null">
+				last_update_time=#{contact.lastUpdateTime},
+			</if>
+		</set>
+		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
+	</update>
+
+	<delete id="deleteByInitiatorIdAndAccepterId">
+		delete from `contact`
+		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
+	</delete>
+
+	<select id="selectByInitiatorIdAndAccepterId" resultType="Contact">
+		select * from `contact`
+		where initiator_id=#{initiatorId} and accepter_id=#{accepterId};
+	</select>
+
+	<select id="queryUserContactByInitiatorId" resultType="UserContact">
+		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
+			   u.id, u.email, u.nickname, u.sex, u.area, u.personal_signature, u.`status` userStatus
+		from contact c inner join `user` u on c.accepter_id=u.id
+		where initiator_id=#{initiatorId} and contact_type=0;
+	</select>
+
+	<select id="queryUserContactByAccepterId" resultType="UserContact">
+		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
+			   u.id, u.email, u.nickname, u.sex, u.area, u.personal_signature, u.`status` userStatus
+		from contact c inner join `user` u on c.initiator_id=u.id
+		where accepter_id=#{accepterId} and contact_type=0;
+	</select>
+
+	<select id="queryGroupContactByInitiatorId" resultType="GroupContact">
+		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
+			   g.id, g.nickname, g.owner_id, g.notice, g.`status` groupStatus, g.authority, g.create_time groupCreateTime
+		from contact c inner join `group` g on c.accepter_id=g.id
+		where initiator_id=#{initiatorId} and contact_type=1;
+	</select>
+
+	<select id="queryGroupContactByAccepterId" resultType="GroupContact">
+		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
+			   g.id, g.nickname, g.owner_id, g.notice, g.`status` groupStatus, g.authority, g.create_time groupCreateTime
+		from contact c inner join `group` g on c.initiator_id=g.id
+		where accepter_id=#{accepterId} and contact_type=1;
+	</select>
+</mapper>
+

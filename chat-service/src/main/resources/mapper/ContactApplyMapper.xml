@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjx.youchat.chat.mapper.ContactApplyMapper">
+	<insert id="insert">
+		insert into `contact_apply` values
+		(#{id},#{initiatorId},#{accepterId},#{contactId},#{applyInfo},#{lastApplyTime},#{status},#{applyType});
+	</insert>
+
+	<select id="select" resultType="ContactApply">
+		select * from `contact_apply`
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="initiatorId!=null">
+				and initiator_id=#{initiatorId}
+			</if>
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="applyInfo!=null">
+				and apply_info=#{applyInfo}
+			</if>
+			<if test="lastApplyTime!=null">
+				and last_apply_time=#{lastApplyTime}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="applyType!=null">
+				and apply_type=#{applyType}
+			</if>
+		</where>;
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(*) from `contact_apply`
+		<where>
+			<if test="id!=null">
+				and id=#{id}
+			</if>
+			<if test="initiatorId!=null">
+				and initiator_id=#{initiatorId}
+			</if>
+			<if test="accepterId!=null">
+				and accepter_id=#{accepterId}
+			</if>
+			<if test="contactId!=null">
+				and contact_id=#{contactId}
+			</if>
+			<if test="applyInfo!=null">
+				and apply_info=#{applyInfo}
+			</if>
+			<if test="lastApplyTime!=null">
+				and last_apply_time=#{lastApplyTime}
+			</if>
+			<if test="status!=null">
+				and status=#{status}
+			</if>
+			<if test="applyType!=null">
+				and apply_type=#{applyType}
+			</if>
+		</where>;
+	</select>
+
+	<select id="selectPage" resultType="ContactApply">
+		select * from `contact_apply`
+		<where>
+			<if test="contactApply.id!=null">
+				and id=#{contactApply.id}
+			</if>
+			<if test="contactApply.initiatorId!=null">
+				and initiator_id=#{contactApply.initiatorId}
+			</if>
+			<if test="contactApply.accepterId!=null">
+				and accepter_id=#{contactApply.accepterId}
+			</if>
+			<if test="contactApply.contactId!=null">
+				and contact_id=#{contactApply.contactId}
+			</if>
+			<if test="contactApply.applyInfo!=null">
+				and apply_info=#{contactApply.applyInfo}
+			</if>
+			<if test="contactApply.lastApplyTime!=null">
+				and last_apply_time=#{contactApply.lastApplyTime}
+			</if>
+			<if test="contactApply.status!=null">
+				and status=#{contactApply.status}
+			</if>
+			<if test="contactApply.applyType!=null">
+				and apply_type=#{contactApply.applyType}
+			</if>
+		</where>
+		limit #{offset},#{count};
+	</select>
+
+	<update id="updateById">
+		update `contact_apply`
+		<set>
+			<if test="contactApply.id!=null">
+				id=#{contactApply.id},
+			</if>
+			<if test="contactApply.initiatorId!=null">
+				initiator_id=#{contactApply.initiatorId},
+			</if>
+			<if test="contactApply.accepterId!=null">
+				accepter_id=#{contactApply.accepterId},
+			</if>
+			<if test="contactApply.contactId!=null">
+				contact_id=#{contactApply.contactId},
+			</if>
+			<if test="contactApply.applyInfo!=null">
+				apply_info=#{contactApply.applyInfo},
+			</if>
+			<if test="contactApply.lastApplyTime!=null">
+				last_apply_time=#{contactApply.lastApplyTime},
+			</if>
+			<if test="contactApply.status!=null">
+				status=#{contactApply.status},
+			</if>
+			<if test="contactApply.applyType!=null">
+				apply_type=#{contactApply.applyType},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+
+	<delete id="deleteById">
+		delete from `contact_apply`
+		where id=#{id};
+	</delete>
+
+	<select id="selectById" resultType="ContactApply">
+		select * from `contact_apply`
+		where id=#{id};
+	</select>
+
+
+</mapper>
+
