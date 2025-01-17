@@ -23,8 +23,8 @@ import com.zjx.youchat.chat.domain.vo.PageVO;
 import com.zjx.youchat.chat.service.UserService;
 import com.zjx.youchat.chat.util.RedisUtil;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,25 +34,20 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private UserMapper userMapper;
+	private final UserMapper userMapper;
 
-	@Autowired
-	private ContactMapper contactMapper;
+	private final ContactMapper contactMapper;
 
-	@Autowired
-	private SessionMapper sessionMapper;
+	private final SessionMapper sessionMapper;
 
-	@Autowired
-	private MessageMapper messageMapper;
+	private final MessageMapper messageMapper;
 
-	@Autowired
-	private StringRedisTemplate redisTemplate;
+	private final StringRedisTemplate redisTemplate;
 
-	@Autowired
-	private RedisUtil redisUtil;
+	private final RedisUtil redisUtil;
 
 	@Override
 	public void insert(User user) {
@@ -81,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public PageVO<User> selectPage(Integer pageSize, Integer pageNum) {
-		PageVO<User> pageVO = new PageVO<User>();
+		PageVO<User> pageVO = new PageVO<>();
 		pageVO.setTotalSize(count());
 		pageVO.setPageSize(pageSize);
 		pageVO.setTotalPage((count() + pageSize - 1) / pageSize);
@@ -92,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public PageVO<User> selectPage(User user, Integer pageSize, Integer pageNum) {
-		PageVO<User> pageVO = new PageVO<User>();
+		PageVO<User> pageVO = new PageVO<>();
 		pageVO.setTotalSize(count(user));
 		pageVO.setPageSize(pageSize);
 		pageVO.setTotalPage((count(user) + pageSize - 1) / pageSize);
@@ -261,9 +256,10 @@ public class UserServiceImpl implements UserService {
 		UserInfoDTO userInfoDTO = new UserInfoDTO();
 		userInfoDTO.setId(user.getId());
 		userInfoDTO.setEmail(user.getEmail());
-		// TODO修改token过期时间
-		redisTemplate.opsForValue().set(UserConstant.USER_TOKEN.formatted(user.getId()), token);
-		redisTemplate.opsForValue().set(UserConstant.TOKEN_PREFIX + token, JSON.toJSONString(userInfoDTO));
+		redisTemplate.opsForValue().set(UserConstant.USER_TOKEN.formatted(user.getId()),
+				token, Duration.ofMinutes(30));
+		redisTemplate.opsForValue().set(UserConstant.TOKEN_PREFIX + token,
+				JSON.toJSONString(userInfoDTO), Duration.ofMinutes(30));
 
 		// 给用户返回token
 		return token;
@@ -271,11 +267,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void logout() {
-		String token = redisTemplate.opsForValue().get(UserConstant.TOKEN_PREFIX + ThreadLocalUtil.getUserId());
-		redisTemplate.delete(UserConstant.TOKEN_PREFIX + ThreadLocalUtil.getUserId());
+		String token = redisTemplate.opsForValue().get(UserConstant.USER_TOKEN.formatted(ThreadLocalUtil.getUserId()));
 		if (token == null) {
 			return;
 		}
-		redisTemplate.delete(token);
+		redisTemplate.delete(UserConstant.USER_TOKEN.formatted(ThreadLocalUtil.getUserId()));
+		redisTemplate.delete(UserConstant.TOKEN_PREFIX + token);
 	}
 }

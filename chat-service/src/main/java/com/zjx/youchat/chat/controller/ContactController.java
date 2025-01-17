@@ -4,14 +4,14 @@ import com.zjx.youchat.chat.domain.po.Group;
 import com.zjx.youchat.chat.domain.vo.ResponseVO;
 import com.zjx.youchat.chat.domain.vo.UserViewVO;
 import com.zjx.youchat.chat.service.ContactService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/contact")
 public class ContactController {
-	@Autowired
-	private ContactService contactService;
+	private final ContactService contactService;
 
 	@GetMapping("/viewUser")
 	public ResponseVO<UserViewVO> viewUser(@RequestParam String userId) {
@@ -21,11 +21,5 @@ public class ContactController {
 	@GetMapping("/viewGroup")
 	public ResponseVO<Group> viewGroup(@RequestParam String groupId) {
 		return ResponseVO.success(contactService.viewGroup(groupId));
-	}
-
-	@GetMapping("/accept")
-	public ResponseVO accept(@RequestParam Long contactId) {
-		contactService.accept(contactId);
-		return ResponseVO.success();
 	}
 }

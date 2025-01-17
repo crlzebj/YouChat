@@ -12,8 +12,8 @@ import com.zjx.youchat.chat.domain.po.Session;
 import com.zjx.youchat.chat.domain.vo.PageVO;
 import com.zjx.youchat.chat.service.GroupService;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,19 +25,17 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class GroupServiceImpl implements GroupService {
 	@Value("${you-chat.server.data-path}")
 	private String dataPath;
 
-	@Autowired
-	private GroupMapper groupMapper;
+	private final GroupMapper groupMapper;
 
-	@Autowired
-	private ContactMapper contactMapper;
+	private final ContactMapper contactMapper;
 
-	@Autowired
-	private SessionMapper sessionMapper;
+	private final SessionMapper sessionMapper;
 
 	@Override
 	public void insert(Group group) {
@@ -66,7 +64,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public PageVO<Group> selectPage(Integer pageSize, Integer pageNum) {
-		PageVO<Group> pageVO = new PageVO<Group>();
+		PageVO<Group> pageVO = new PageVO<>();
 		pageVO.setTotalSize(count());
 		pageVO.setPageSize(pageSize);
 		pageVO.setTotalPage((count() + pageSize - 1) / pageSize);
@@ -77,7 +75,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public PageVO<Group> selectPage(Group group, Integer pageSize, Integer pageNum) {
-		PageVO<Group> pageVO = new PageVO<Group>();
+		PageVO<Group> pageVO = new PageVO<>();
 		pageVO.setTotalSize(count(group));
 		pageVO.setPageSize(pageSize);
 		pageVO.setTotalPage((count(group) + pageSize - 1) / pageSize);

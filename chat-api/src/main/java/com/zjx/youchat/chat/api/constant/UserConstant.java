@@ -1,4 +1,4 @@
-package com.zjx.youchat.chat.constant;
+package com.zjx.youchat.chat.api.constant;
 
 public class UserConstant {
     private UserConstant() {}

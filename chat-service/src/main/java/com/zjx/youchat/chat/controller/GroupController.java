@@ -3,14 +3,14 @@ package com.zjx.youchat.chat.controller;
 import com.zjx.youchat.chat.domain.dto.GroupRegisterDTO;
 import com.zjx.youchat.chat.domain.vo.ResponseVO;
 import com.zjx.youchat.chat.service.GroupService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/group")
 public class GroupController {
-	@Autowired
-	private GroupService groupService;
+	private final GroupService groupService;
 
 	@PostMapping("/register")
 	public ResponseVO register(GroupRegisterDTO groupRegisterDTO) {

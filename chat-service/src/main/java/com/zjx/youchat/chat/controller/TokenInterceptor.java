@@ -6,34 +6,23 @@ import com.zjx.youchat.chat.constant.UserConstant;
 import com.zjx.youchat.chat.exception.BusinessException;
 import com.zjx.youchat.chat.domain.dto.UserInfoDTO;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RequiredArgsConstructor
 public class TokenInterceptor implements HandlerInterceptor {
     private final StringRedisTemplate redisTemplate;
-
-    public TokenInterceptor(StringRedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
-        String token = request.getHeader("token");
-        if (token == null) {
-            throw new BusinessException(ExceptionConstant.TOKEN_FAILED);
-        }
-        String userInfoStr = redisTemplate.opsForValue().get(UserConstant.TOKEN_PREFIX + token);
-        if (userInfoStr == null) {
-            throw new BusinessException(ExceptionConstant.TOKEN_FAILED);
-        }
-        UserInfoDTO userInfo = JSON.parseObject(userInfoStr, UserInfoDTO.class);
-        ThreadLocalUtil.setUserId(userInfo.getId());
-        ThreadLocalUtil.setEmail(userInfo.getEmail());
+        ThreadLocalUtil.setUserId(request.getHeader("user-id"));
+        ThreadLocalUtil.setEmail(request.getHeader("email"));
         return true;
     }
 

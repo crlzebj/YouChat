@@ -28,6 +28,4 @@ public interface ContactService {
 	UserViewVO viewUser(String userId);
 
 	Group viewGroup(String groupId);
-
-	void accept(Long contactId);
 }

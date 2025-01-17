@@ -1,6 +1,6 @@
 package com.zjx.youchat.chat.service;
 
-import com.zjx.youchat.chat.domain.dto.ContactApplyAddDTO;
+import com.zjx.youchat.chat.domain.dto.ContactApplyDTO;
 import com.zjx.youchat.chat.domain.po.ContactApply;
 import com.zjx.youchat.chat.domain.vo.GroupQueryVO;
 import com.zjx.youchat.chat.domain.vo.PageVO;
@@ -30,5 +30,7 @@ public interface ContactApplyService {
 
 	GroupQueryVO queryGroup(String groupId);
 
-	void add(ContactApplyAddDTO contactApplyAddDTO);
+	void apply(ContactApplyDTO contactApplyDTO);
+
+	void accept(Long id);
 }

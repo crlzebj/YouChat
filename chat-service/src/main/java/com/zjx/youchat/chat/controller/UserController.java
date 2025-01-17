@@ -6,14 +6,14 @@ import com.zjx.youchat.chat.domain.vo.CaptchaVO;
 import com.zjx.youchat.chat.domain.vo.ResponseVO;
 import com.zjx.youchat.chat.domain.vo.UserLoginVO;
 import com.zjx.youchat.chat.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 
 	@GetMapping("/captcha")
 	public ResponseVO<CaptchaVO> getCaptcha() {

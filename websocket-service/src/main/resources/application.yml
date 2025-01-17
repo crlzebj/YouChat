@@ -15,6 +15,8 @@ spring:
         min-idle: 0
         max-wait: 100
 
+  # 微服务配置
+
 # 项目配置
 you-chat:
   websocket-port: 9090

@@ -1,25 +1,31 @@
 package com.zjx.youchat.chat.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import com.zjx.youchat.chat.constant.ExceptionConstant;
 import com.zjx.youchat.chat.constant.UserConstant;
+import com.zjx.youchat.chat.domain.dto.MessageSendDTO;
+import com.zjx.youchat.chat.exception.BusinessException;
+import com.zjx.youchat.chat.mapper.ContactMapper;
 import com.zjx.youchat.chat.mapper.MessageMapper;
 import com.zjx.youchat.chat.domain.po.Message;
 import com.zjx.youchat.chat.domain.vo.PageVO;
 import com.zjx.youchat.chat.service.MessageService;
 import com.zjx.youchat.chat.util.RedisUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zjx.youchat.chat.util.ThreadLocalUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class MessageServiceImpl implements MessageService {
-	@Autowired
-	private MessageMapper messageMapper;
+	private final MessageMapper messageMapper;
 
-	@Autowired
-	private RedisUtil redisUtil;
+	private final RedisUtil redisUtil;
+	private final ContactMapper contactMapper;
 
 	@Override
 	public void insert(Message message) {
@@ -68,7 +74,6 @@ public class MessageServiceImpl implements MessageService {
 		return pageVO;
 	}
 
-
 	@Override
 	public void updateById(Long id, Message message) {
 		messageMapper.updateById(id, message);
@@ -85,9 +90,21 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void send(Message message) {
+	public void send(MessageSendDTO messageSendDTO) {
+		String senderId = ThreadLocalUtil.getUserId();
+		// 校验好友关系
+		if (contactMapper.selectByInitiatorIdAndAccepterId(senderId,
+				messageSendDTO.getReceiverId()) == null &&
+				contactMapper.selectByInitiatorIdAndAccepterId(messageSendDTO.getReceiverId(),
+						senderId) == null) {
+			throw new BusinessException(ExceptionConstant.ILLEGAL_REQUEST1.formatted(senderId));
+		}
+
+		Message message = new Message();
+		BeanUtil.copyProperties(messageSendDTO, message);
 		Long messageId = redisUtil.generateId(UserConstant.MESSAGE_ID_PREFIX);
 		message.setId(messageId);
+		message.setSenderId(ThreadLocalUtil.getUserId());
 		String sessionId = null;
 		if (message.getReceiverType() == 0) {
 			sessionId = message.getSenderId().compareTo(message.getReceiverId()) > 0 ?
@@ -99,5 +116,7 @@ public class MessageServiceImpl implements MessageService {
 		message.setSessionId(sessionId);
 		message.setSendTime(LocalDateTime.now());
 		messageMapper.insert(message);
+
+		// TODO发送websocket消息
 	}
 }

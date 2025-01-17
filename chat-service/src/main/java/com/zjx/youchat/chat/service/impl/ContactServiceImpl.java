@@ -15,6 +15,7 @@ import com.zjx.youchat.chat.domain.vo.PageVO;
 import com.zjx.youchat.chat.domain.vo.UserViewVO;
 import com.zjx.youchat.chat.service.ContactService;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,18 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ContactServiceImpl implements ContactService {
-	@Autowired
-	private ContactMapper contactMapper;
+	private final ContactMapper contactMapper;
 
-	@Autowired
-	private UserMapper userMapper;
+	private final UserMapper userMapper;
 
-	@Autowired
-	private GroupMapper groupMapper;
-    @Autowired
-    private ContactApplyMapper contactApplyMapper;
+	private final GroupMapper groupMapper;
 
 	@Override
 	public void insert(Contact contact) {
@@ -118,29 +115,5 @@ public class ContactServiceImpl implements ContactService {
 		}
 		// TODO校验好友关系
 		return group;
-	}
-
-	@Override
-	@Transactional
-	public void accept(Long contactId) {
-		ContactApply contactApply = contactApplyMapper.selectById(contactId);
-
-		// 校验好友申请信息
-		// 判断数据库中是否有改联系人申请以及是否为发送给自己的好友申请
-		if (contactApply == null || !contactApply.getAccepterId().equals(ThreadLocalUtil.getUserId())) {
-			throw new BusinessException(ExceptionConstant.ILLEGAL_REQUEST);
-		}
-
-		// 数据库中插入联系人
-		Contact contact = new Contact();
-		contact.setInitiatorId(contactApply.getInitiatorId());
-		contact.setAccepterId(contactApply.getContactId());
-		contact.setStatus(0);
-		contact.setContactType(contactApply.getApplyType());
-		contact.setCreateTime(LocalDateTime.now());
-		contact.setLastUpdateTime(LocalDateTime.now());
-		contactMapper.insert(contact);
-
-		// TODO修改联系人申请处理状态
 	}
 }

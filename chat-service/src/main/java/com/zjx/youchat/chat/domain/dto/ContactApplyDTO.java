@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class ContactApplyAddDTO implements Serializable {
+public class ContactApplyDTO implements Serializable {
     // 好友申请则为用户id 群组申请则为群组id
     private String contactId;
     // 申请信息

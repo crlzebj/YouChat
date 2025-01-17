@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  # redis配置
+  redis:
+    host: 10.181.8.94
+    port: 6379
+    password: '030514'
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 100
+  # 微服务配置
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: chat-service
+          uri: lb://chat-service
+          predicates:
+            - Path=/user/**, /group/**, /contact/**, /contactApply/**, /message/**

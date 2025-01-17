@@ -1,5 +1,6 @@
 package com.zjx.youchat.chat.service;
 
+import com.zjx.youchat.chat.domain.dto.MessageSendDTO;
 import com.zjx.youchat.chat.domain.po.Message;
 import com.zjx.youchat.chat.domain.vo.PageVO;
 
@@ -23,5 +24,5 @@ public interface MessageService {
 
 	Message selectById(Long id);
 
-	void send(Message message);
+	void send(MessageSendDTO messageSendDTO);
 }
