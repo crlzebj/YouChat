@@ -12,23 +12,19 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
+@RequiredArgsConstructor
 @ChannelHandler.Sharable
 @Component
 public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    @Autowired
-    private ChannelManager channelManager;
-
-    @Autowired
-    private RedissonService redissonService;
+    private final ChannelManager channelManager;
 
     private UserInfoDTO authenticate(String uri) {
         if (!uri.contains("?")) {
@@ -56,6 +52,7 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
         AttributeKey<String> attributeKey = AttributeKey.valueOf("userId");
         String userId = ctx.channel().attr(attributeKey).get();
         channelManager.cancelChannel(userId);
+        log.info("用户：{} 下线了", userId);
     }
 
     @Override
@@ -85,6 +82,7 @@ public class WebSocketChatHandler extends SimpleChannelInboundHandler<TextWebSoc
 
         //注册Channel
         channelManager.registerChannel(userId, channel);
+        log.info("用户：{} 上线了", userId);
     }
 
     @Override

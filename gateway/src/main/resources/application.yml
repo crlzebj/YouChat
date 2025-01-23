@@ -4,7 +4,7 @@ server:
 spring:
   # redis配置
   redis:
-    host: 10.181.8.94
+    host: 127.0.0.1
     port: 6379
     password: '030514'
     database: 0
@@ -21,8 +21,17 @@ spring:
     nacos:
       server-addr: 127.0.0.1:8848
     gateway:
+      discovery:
+        locator:
+          enabled: true # 启用服务发现
+          lower-case-service-id: true
+
       routes:
         - id: chat-service
           uri: lb://chat-service
           predicates:
             - Path=/user/**, /group/**, /contact/**, /contactApply/**, /message/**
+        - id: websocket-server
+          uri: lb:ws://websocket-server
+          predicates:
+            - Path=/ws

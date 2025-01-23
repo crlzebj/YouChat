@@ -4,7 +4,7 @@ server:
 spring:
   # redis配置
   redis:
-    host: 10.181.8.94
+    host: 127.0.0.1
     port: 6379
     password: '030514'
     database: 0
@@ -16,7 +16,13 @@ spring:
         max-wait: 100
 
   # 微服务配置
+  application:
+    name: websocket-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
 
 # 项目配置
 you-chat:
   websocket-port: 9090
+  application-name: websocket-server

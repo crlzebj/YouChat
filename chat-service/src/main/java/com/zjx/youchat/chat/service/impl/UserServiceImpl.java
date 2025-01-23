@@ -273,5 +273,7 @@ public class UserServiceImpl implements UserService {
 		}
 		redisTemplate.delete(UserConstant.USER_TOKEN.formatted(ThreadLocalUtil.getUserId()));
 		redisTemplate.delete(UserConstant.TOKEN_PREFIX + token);
+
+		// TODO关闭Channel
 	}
 }

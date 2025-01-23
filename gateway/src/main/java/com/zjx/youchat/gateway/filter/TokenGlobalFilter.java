@@ -34,6 +34,7 @@ public class TokenGlobalFilter implements GlobalFilter, Ordered {
         excludePaths.add("/user/captcha");
         excludePaths.add("/user/register");
         excludePaths.add("/user/login");
+        excludePaths.add("/ws");
         if (excludePaths.contains(request.getPath().toString())) {
             return chain.filter(exchange);
         }

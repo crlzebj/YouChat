@@ -64,6 +64,12 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!--nacos服务注册发现-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.zjx</groupId>
             <artifactId>chat-api</artifactId>
