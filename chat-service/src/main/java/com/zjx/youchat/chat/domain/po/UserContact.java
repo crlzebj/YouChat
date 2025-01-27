@@ -17,8 +17,6 @@ public class UserContact implements Serializable {
     private LocalDateTime createTime;
     // 用户id
     private String id;
-    // 邮箱
-    private String email;
     // 昵称
     private String nickname;
     // 性别

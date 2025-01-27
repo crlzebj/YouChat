@@ -1,10 +1,5 @@
 package com.zjx.youchat.chat.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.zjx.youchat.chat.constant.ExceptionConstant;
-import com.zjx.youchat.chat.constant.UserConstant;
-import com.zjx.youchat.chat.exception.BusinessException;
-import com.zjx.youchat.chat.domain.dto.UserInfoDTO;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

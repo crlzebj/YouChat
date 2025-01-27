@@ -195,6 +195,8 @@ public class ContactApplyServiceImpl implements ContactApplyService {
 			throw new BusinessException(ExceptionConstant.ILLEGAL_REQUEST);
 		}
 
+		// TODO数据库新增会话
+
 		// 数据库中插入联系人
 		Contact contact = new Contact();
 		contact.setInitiatorId(contactApply.getInitiatorId());
@@ -208,6 +210,8 @@ public class ContactApplyServiceImpl implements ContactApplyService {
 		// 修改联系人申请处理状态
 		contactApply.setStatus(1);
 		contactApplyMapper.updateById(id, contactApply);
+
+
 
 		// TODO发送websocket消息
 	}

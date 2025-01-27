@@ -24,5 +24,7 @@ public interface MessageService {
 
 	Message selectById(Long id);
 
+	List<Message> getMyMessage();
+
 	void send(MessageSendDTO messageSendDTO);
 }

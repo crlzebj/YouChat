@@ -2,25 +2,20 @@ package com.zjx.youchat.chat.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.zjx.youchat.chat.constant.ExceptionConstant;
+import com.zjx.youchat.chat.domain.po.*;
+import com.zjx.youchat.chat.domain.po.UserContact;
 import com.zjx.youchat.chat.exception.BusinessException;
-import com.zjx.youchat.chat.mapper.ContactApplyMapper;
 import com.zjx.youchat.chat.mapper.ContactMapper;
 import com.zjx.youchat.chat.mapper.GroupMapper;
 import com.zjx.youchat.chat.mapper.UserMapper;
-import com.zjx.youchat.chat.domain.po.Contact;
-import com.zjx.youchat.chat.domain.po.ContactApply;
-import com.zjx.youchat.chat.domain.po.Group;
-import com.zjx.youchat.chat.domain.po.User;
 import com.zjx.youchat.chat.domain.vo.PageVO;
 import com.zjx.youchat.chat.domain.vo.UserViewVO;
 import com.zjx.youchat.chat.service.ContactService;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -93,6 +88,24 @@ public class ContactServiceImpl implements ContactService {
 	@Override
 	public Contact selectByInitiatorIdAndAccepterId(String initiatorId, String accepterId) {
 		return contactMapper.selectByInitiatorIdAndAccepterId(initiatorId, accepterId);
+	}
+
+	@Override
+	public List<UserContact> getMyFriend() {
+		String userId = ThreadLocalUtil.getUserId();
+		List<UserContact> list = new ArrayList<>();
+		list.addAll(contactMapper.queryUserContactByInitiatorId(userId));
+		list.addAll(contactMapper.queryUserContactByAccepterId(userId));
+		return list;
+	}
+
+	@Override
+	public List<GroupContact> getMyGroup() {
+		String userId = ThreadLocalUtil.getUserId();
+		List<GroupContact> list = new ArrayList<>();
+		list.addAll(contactMapper.queryGroupContactByInitiatorId(userId));
+		list.addAll(contactMapper.queryGroupContactByAccepterId(userId));
+		return list;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.zjx.youchat.chat.controller;
 import com.zjx.youchat.chat.domain.dto.UserLoginDTO;
 import com.zjx.youchat.chat.domain.dto.UserRegisterDTO;
 import com.zjx.youchat.chat.domain.vo.CaptchaVO;
+import com.zjx.youchat.chat.domain.dto.PersonalInfoDTO;
 import com.zjx.youchat.chat.domain.vo.ResponseVO;
 import com.zjx.youchat.chat.domain.vo.UserLoginVO;
 import com.zjx.youchat.chat.service.UserService;
@@ -37,5 +38,10 @@ public class UserController {
 	public ResponseVO logout() {
 		userService.logout();
 		return ResponseVO.success();
+	}
+
+	@GetMapping("/me")
+	public PersonalInfoDTO getPersonalInfo() {
+		return userService.getPersonalInfo();
 	}
 }

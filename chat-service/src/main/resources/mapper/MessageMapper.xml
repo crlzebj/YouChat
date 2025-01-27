@@ -187,6 +187,13 @@
 		where id=#{id};
 	</select>
 
+	<select id="selectBySessionIds" resultType="Message">
+		select * from `message`
+		where session_id in
+		<foreach collection="sessionIds" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</select>
 
 </mapper>
 

@@ -1,11 +1,13 @@
 package com.zjx.youchat.chat.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.alibaba.fastjson.JSON;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.zjx.youchat.chat.constant.ExceptionConstant;
 import com.zjx.youchat.chat.constant.RobotConstant;
 import com.zjx.youchat.chat.constant.UserConstant;
+import com.zjx.youchat.chat.domain.dto.PersonalInfoDTO;
 import com.zjx.youchat.chat.exception.BusinessException;
 import com.zjx.youchat.chat.mapper.ContactMapper;
 import com.zjx.youchat.chat.mapper.MessageMapper;
@@ -275,5 +277,14 @@ public class UserServiceImpl implements UserService {
 		redisTemplate.delete(UserConstant.TOKEN_PREFIX + token);
 
 		// TODO关闭Channel
+	}
+
+	@Override
+	public PersonalInfoDTO getPersonalInfo() {
+		String userId = ThreadLocalUtil.getUserId();
+		User user = userMapper.selectById(userId);
+		PersonalInfoDTO personalInfoDTO = new PersonalInfoDTO();
+		BeanUtil.copyProperties(user, personalInfoDTO);
+		return personalInfoDTO;
 	}
 }

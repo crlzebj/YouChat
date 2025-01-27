@@ -4,6 +4,7 @@ import com.zjx.youchat.chat.mapper.SessionMapper;
 import com.zjx.youchat.chat.domain.po.Session;
 import com.zjx.youchat.chat.domain.vo.PageVO;
 import com.zjx.youchat.chat.service.SessionService;
+import com.zjx.youchat.chat.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,5 +91,11 @@ public class SessionServiceImpl implements SessionService {
 	@Override
 	public Session selectById(String id) {
 		return sessionMapper.selectById(id);
+	}
+
+	@Override
+	public List<Session> getMySession() {
+		String userId = ThreadLocalUtil.getUserId();
+		return sessionMapper.selectSession(userId);
 	}
 }

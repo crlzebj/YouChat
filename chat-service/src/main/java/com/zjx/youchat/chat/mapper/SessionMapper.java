@@ -14,17 +14,27 @@ public interface SessionMapper {
 
 	Integer count(Session session);
 
-	List<Session> selectPage(@Param("session") Session session, @Param("offset") Integer offset, @Param("count") Integer count);
+	List<Session> selectPage(@Param("session") Session session,
+							 @Param("offset") Integer offset,
+							 @Param("count") Integer count);
 
-	void updateByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId, @Param("session") Session session);
+	void updateByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId,
+										  @Param("accepterId") String accepterId,
+										  @Param("session") Session session);
 
-	void deleteByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
+	void deleteByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId,
+										  @Param("accepterId") String accepterId);
 
-	Session selectByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId, @Param("accepterId") String accepterId);
+	Session selectByInitiatorIdAndAccepterId(@Param("initiatorId") String initiatorId,
+											 @Param("accepterId") String accepterId);
 
 	void updateById(@Param("id") String id, @Param("session") Session session);
 
 	void deleteById(@Param("id") String id);
 
 	Session selectById(@Param("id") String id);
+
+	List<String> selectSessionId(@Param("userId") String userId);
+
+	List<Session> selectSession(@Param("userId") String userId);
 }

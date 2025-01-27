@@ -117,29 +117,29 @@
 
 	<select id="queryUserContactByInitiatorId" resultType="UserContact">
 		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
-			   u.id, u.email, u.nickname, u.sex, u.area, u.personal_signature, u.`status` userStatus
-		from contact c inner join `user` u on c.accepter_id=u.id
+			   u.id, u.nickname, u.sex, u.area, u.personal_signature, u.`status` userStatus
+		from `contact` c inner join `user` u on c.accepter_id=u.id
 		where initiator_id=#{initiatorId} and contact_type=0;
 	</select>
 
 	<select id="queryUserContactByAccepterId" resultType="UserContact">
 		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
-			   u.id, u.email, u.nickname, u.sex, u.area, u.personal_signature, u.`status` userStatus
-		from contact c inner join `user` u on c.initiator_id=u.id
+			   u.id, u.nickname, u.sex, u.area, u.personal_signature, u.`status` userStatus
+		from `contact` c inner join `user` u on c.initiator_id=u.id
 		where accepter_id=#{accepterId} and contact_type=0;
 	</select>
 
 	<select id="queryGroupContactByInitiatorId" resultType="GroupContact">
 		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
 			   g.id, g.nickname, g.owner_id, g.notice, g.`status` groupStatus, g.authority, g.create_time groupCreateTime
-		from contact c inner join `group` g on c.accepter_id=g.id
+		from `contact` c inner join `group` g on c.accepter_id=g.id
 		where initiator_id=#{initiatorId} and contact_type=1;
 	</select>
 
 	<select id="queryGroupContactByAccepterId" resultType="GroupContact">
 		select c.initiator_id, c.accepter_id, c.`status`, c.create_time,
 			   g.id, g.nickname, g.owner_id, g.notice, g.`status` groupStatus, g.authority, g.create_time groupCreateTime
-		from contact c inner join `group` g on c.initiator_id=g.id
+		from `contact` c inner join `group` g on c.initiator_id=g.id
 		where accepter_id=#{accepterId} and contact_type=1;
 	</select>
 </mapper>

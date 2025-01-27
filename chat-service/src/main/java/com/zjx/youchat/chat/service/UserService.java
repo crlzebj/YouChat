@@ -5,6 +5,7 @@ import com.zjx.youchat.chat.domain.dto.UserRegisterDTO;
 import com.zjx.youchat.chat.domain.po.User;
 import com.zjx.youchat.chat.domain.vo.CaptchaVO;
 import com.zjx.youchat.chat.domain.vo.PageVO;
+import com.zjx.youchat.chat.domain.dto.PersonalInfoDTO;
 
 import java.util.List;
 
@@ -39,4 +40,6 @@ public interface UserService {
 	String login(UserLoginDTO userLoginDTO);
 
 	void logout();
+
+	PersonalInfoDTO getPersonalInfo();
 }

@@ -1,0 +1,28 @@
+server:
+  port: 8090
+
+spring:
+  # redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: '030514'
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 100
+
+  # 微服务配置
+  application:
+    name: ws-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+
+# 项目配置
+you-chat:
+  ws-port: 9090
+  application-name: ws-server

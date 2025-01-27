@@ -1,8 +1,8 @@
 package com.zjx.youchat.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.zjx.youchat.chat.api.constant.UserConstant;
-import com.zjx.youchat.chat.api.domain.dto.UserInfoDTO;
+import com.zjx.youchat.api.constant.UserConstant;
+import com.zjx.youchat.api.dto.UserInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

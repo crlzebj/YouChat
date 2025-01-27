@@ -2,7 +2,9 @@ package com.zjx.youchat.chat.service;
 
 import com.zjx.youchat.chat.domain.po.Contact;
 import com.zjx.youchat.chat.domain.po.Group;
+import com.zjx.youchat.chat.domain.po.GroupContact;
 import com.zjx.youchat.chat.domain.vo.PageVO;
+import com.zjx.youchat.chat.domain.po.UserContact;
 import com.zjx.youchat.chat.domain.vo.UserViewVO;
 
 import java.util.List;
@@ -24,6 +26,10 @@ public interface ContactService {
 	void deleteByInitiatorIdAndAccepterId(String initiatorId, String accepterId);
 
 	Contact selectByInitiatorIdAndAccepterId(String initiatorId, String accepterId);
+
+	List<UserContact> getMyFriend();
+
+	List<GroupContact> getMyGroup();
 
 	UserViewVO viewUser(String userId);
 

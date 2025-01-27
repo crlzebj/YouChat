@@ -16,7 +16,7 @@
 
     <modules>
         <module>chat-service</module>
-        <module>websocket-service</module>
+        <module>ws-service</module>
         <module>gateway</module>
         <module>chat-api</module>
     </modules>

@@ -28,4 +28,6 @@ public interface SessionService {
 	void deleteById(String id);
 
 	Session selectById(String id);
+
+	List<Session> getMySession();
 }

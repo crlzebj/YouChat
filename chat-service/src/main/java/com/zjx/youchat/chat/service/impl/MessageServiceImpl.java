@@ -2,19 +2,30 @@ package com.zjx.youchat.chat.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import com.zjx.youchat.api.client.URIClient;
 import com.zjx.youchat.chat.constant.ExceptionConstant;
 import com.zjx.youchat.chat.constant.UserConstant;
 import com.zjx.youchat.chat.domain.dto.MessageSendDTO;
+import com.zjx.youchat.chat.domain.dto.WSPackage;
 import com.zjx.youchat.chat.exception.BusinessException;
 import com.zjx.youchat.chat.mapper.ContactMapper;
 import com.zjx.youchat.chat.mapper.MessageMapper;
 import com.zjx.youchat.chat.domain.po.Message;
 import com.zjx.youchat.chat.domain.vo.PageVO;
+import com.zjx.youchat.chat.mapper.SessionMapper;
 import com.zjx.youchat.chat.service.MessageService;
 import com.zjx.youchat.chat.util.RedisUtil;
 import com.zjx.youchat.chat.util.ThreadLocalUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,8 +35,17 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
 	private final MessageMapper messageMapper;
 
+	private final SessionMapper sessionMapper;
+
 	private final RedisUtil redisUtil;
+
 	private final ContactMapper contactMapper;
+
+	private final URIClient uriClient;
+
+	private final RestTemplate restTemplate;
+
+	private final DiscoveryClient discoveryClient;
 
 	@Override
 	public void insert(Message message) {
@@ -90,6 +110,13 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
+	public List<Message> getMyMessage() {
+		String userId = ThreadLocalUtil.getUserId();
+		List<String> sessionIds = sessionMapper.selectSessionId(userId);
+		return messageMapper.selectBySessionIds(sessionIds);
+	}
+
+	@Override
 	public void send(MessageSendDTO messageSendDTO) {
 		String senderId = ThreadLocalUtil.getUserId();
 		// 校验好友关系
@@ -100,6 +127,7 @@ public class MessageServiceImpl implements MessageService {
 			throw new BusinessException(ExceptionConstant.ILLEGAL_REQUEST1.formatted(senderId));
 		}
 
+		// TODO消息队列异步修改数据库
 		Message message = new Message();
 		BeanUtil.copyProperties(messageSendDTO, message);
 		Long messageId = redisUtil.generateId(UserConstant.MESSAGE_ID_PREFIX);
@@ -118,5 +146,39 @@ public class MessageServiceImpl implements MessageService {
 		messageMapper.insert(message);
 
 		// TODO发送websocket消息
+		if (messageSendDTO.getReceiverType() == 0) {
+			String uri = uriClient.queryUser(message.getReceiverId());
+
+			WSPackage<Message> wsPackage = new WSPackage<>();
+			wsPackage.setType(1);
+			wsPackage.setReceiverId(messageSendDTO.getReceiverId());
+			wsPackage.setData(message);
+
+			HttpEntity<WSPackage<Message>> httpEntity = new HttpEntity<>(wsPackage);
+			// 发送请求获得响应
+			ResponseEntity<Void> response = restTemplate.exchange(
+					"http://" + uri + "/msg/user",
+					HttpMethod.POST,
+					httpEntity,
+					Void.class
+			);
+		} else {
+			List<String> uris = uriClient.queryGroup(message.getReceiverId());
+			WSPackage<Message> wsPackage = new WSPackage<>();
+			wsPackage.setType(2);
+			wsPackage.setReceiverId(messageSendDTO.getReceiverId());
+			wsPackage.setData(message);
+
+			HttpEntity<WSPackage<Message>> httpEntity = new HttpEntity<>(wsPackage);
+			for (String uri : uris) {
+				// 发送请求获得响应
+				ResponseEntity<Void> response = restTemplate.exchange(
+						"http://" + uri + "/msg/group",
+						HttpMethod.POST,
+						httpEntity,
+						Void.class
+				);
+			}
+		}
 	}
 }

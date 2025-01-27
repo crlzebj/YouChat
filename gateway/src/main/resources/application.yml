@@ -30,8 +30,8 @@ spring:
         - id: chat-service
           uri: lb://chat-service
           predicates:
-            - Path=/user/**, /group/**, /contact/**, /contactApply/**, /message/**
-        - id: websocket-server
-          uri: lb:ws://websocket-server
+            - Path=/user/**, /group/**, /contact/**, /contactApply/**, /session/**, /message/**
+        - id: ws-server
+          uri: lb:ws://ws-server
           predicates:
             - Path=/ws

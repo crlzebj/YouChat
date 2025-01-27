@@ -135,6 +135,14 @@
 		where id=#{id};
 	</select>
 
+	<select id="selectSessionId" resultType="string">
+		select id from `session`
+		where initiator_id=#{userId} or accepter_id=#{userId};
+	</select>
 
+	<select id="selectSession" resultType="Session">
+		select * from `session`
+		where initiator_id=#{userId} or accepter_id=#{userId};
+	</select>
 </mapper>
 
