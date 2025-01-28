@@ -9,8 +9,8 @@
         <version>2.7.3</version>
     </parent>
 
-    <groupId>com.zjx</groupId>
-    <artifactId>YouChat</artifactId>
+    <groupId>com.zjx.youchat</groupId>
+    <artifactId>youchat</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -19,6 +19,7 @@
         <module>ws-service</module>
         <module>gateway</module>
         <module>chat-api</module>
+        <module>ai-api</module>
     </modules>
 
     <properties>
